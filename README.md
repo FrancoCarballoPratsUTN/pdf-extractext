@@ -148,7 +148,7 @@ El proyecto sigue una arquitectura limpia con las siguientes capas:
 
 1. **Clonar el repositorio:**
    ```bash
-   git clone <repository-https://github.com/FrancoCarballoPratsUTN/pdf-extractext>
+   git clone https://github.com/FrancoCarballoPratsUTN/pdf-extractext
    cd pdf-extractext
    ```
 
