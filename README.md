@@ -1,6 +1,9 @@
 # PDF ExtractText
 
-Sistema de extracción de texto de archivos PDF con conversión a formato Markdown mediante inteligencia artificial.
+Sistema que permite extraer texto de archivos PDF y convertir ese contenido en un archivo en formato Markdown (.md), el cual ademas quedara resumido.
+
+###### Estado actual
+Este sistema se encuentra actualmente en desarrollo.
 
 ## Descripción
 
@@ -26,7 +29,7 @@ PDF ExtractText es una API REST desarrollada en Python que permite:
 | Lenguaje | Python 3.10+ |
 | Framework | FastAPI |
 | Base de Datos | MongoDB |
-| IA | Modelo Kimi |
+| IA | "Actualizar" |
 | Gestión de dependencias | UV |
 | Testing | Pytest |
 
@@ -103,16 +106,16 @@ El proyecto sigue una arquitectura limpia con las siguientes capas:
 
 ```
 ┌─────────────────────────────────────────┐
-│           PRESENTATION                   │
+│           PRESENTATION                  │
 │  (Routes, Schemas, API Endpoints)       │
 ├─────────────────────────────────────────┤
-│             DOMAIN                       │
+│             DOMAIN                      │
 │  (Entities, Use Cases, Repository       │
-│   Interfaces)                            │
+│   Interfaces)                           │
 ├─────────────────────────────────────────┤
-│              DATA                        │
-│  (Repository Implementations, Database   │
-│   Connection, External Services)         │
+│              DATA                       │
+│  (Repository Implementations, Database  │
+│   Connection, External Services)        │
 └─────────────────────────────────────────┘
 ```
 
@@ -145,7 +148,7 @@ El proyecto sigue una arquitectura limpia con las siguientes capas:
 
 1. **Clonar el repositorio:**
    ```bash
-   git clone <repository-url>
+   git clone <repository-https://github.com/FrancoCarballoPratsUTN/pdf-extractext>
    cd pdf-extractext
    ```
 
@@ -157,14 +160,6 @@ El proyecto sigue una arquitectura limpia con las siguientes capas:
 3. **Instalar dependencias de desarrollo:**
    ```bash
    uv sync --extra dev
-   ```
-
-4. **Configurar variables de entorno:**
-   Crear un archivo `.env` en la raíz del proyecto:
-   ```env
-   MONGODB_URL=mongodb://localhost:27017
-   DATABASE_NAME=pdf_extractext
-   KIMI_API_KEY=tu-api-key
    ```
 
 ### Ejecución
@@ -281,14 +276,6 @@ El proyecto sigue el ciclo Red-Green-Refactor:
 - **Backing Services**: Servicios tratados como recursos conectables
 - **Build, Release, Run**: Separar construcción de ejecución
 - **Processes**: Ejecución como procesos sin estado
-
-## Contribuir
-
-1. Fork el repositorio
-2. Crear una rama feature (`git checkout -b feature/nueva-funcionalidad`)
-3. Commitear cambios (`git commit -m 'Agregar nueva funcionalidad'`)
-4. Push a la rama (`git push origin feature/nueva-funcionalidad`)
-5. Abrir un Pull Request
 
 ## Licencia
 
