@@ -2,7 +2,7 @@
 
 Sistema que permite extraer texto de archivos PDF y, mediante el uso de inteligencia artificial, convertir dicho contenido a formato Markdown (.md).
 
----
+
 
 ## Tecnología
 
@@ -13,7 +13,7 @@ El sistema está diseñado con un enfoque en el rendimiento y la escalabilidad. 
 - Modelo de Inteligencia Artificial: Kimi  
 - MongoDB (base de datos NoSQL)  
 
----
+
 
 ## Metodología
 
@@ -38,3 +38,19 @@ Metodologías y buenas prácticas aplicadas durante el desarrollo para garantiza
   - IV. Backing Services: servicios tratados como recursos conectables 
   - V. Construir, desplegar, ejecutar: separar la construccion de la ejecución
   - VI. Processes: ejecución como procesos sin estado  
+
+
+
+## Principios de programación
+
+Principios utilizados para guiar el desarrollo del sistema y mejorar la calidad del código.
+
+- KISS (Keep It Simple, Stupid): priorizar soluciones simples y fáciles de entender  
+- DRY (Don't Repeat Yourself): evitar la duplicación de código mediante la reutilización  
+- YAGNI (You Aren't Gonna Need It): no implementar funcionalidades hasta que sean necesarias  
+- SOLID:
+  - S: Principio de responsabilidad única (SRP)  
+  - O: Principio abierto/cerrado (OCP)  
+  - L: Principio de sustitución de Liskov (LSP)  
+  - I: Principio de segregación de interfaces (ISP)  
+  - D: Principio de inversión de dependencias (DIP)  
