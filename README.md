@@ -1,46 +1,46 @@
 # PDF ExtractText
 
-Sistema que permite extraer texto de archivos PDF y convertir ese contenido en un archivo en formato Markdown (.md), el cual ademas quedara resumido.
+A system that allows extracting text from PDF files and converting that content into a Markdown (.md) file, which will also be summarized.
 
-###### Estado actual
-Este sistema se encuentra actualmente en desarrollo.
+###### Current Status
+This system is currently under development.
 
-## Descripción
+## Description
 
-PDF ExtractText es una API REST desarrollada en Python que permite:
-- **Extraer texto** de archivos PDF
-- **Convertir** el contenido extraído a formato Markdown (.md)
-- **Almacenar** documentos en MongoDB
-- **Gestionar** documentos extraídos mediante endpoints REST
+PDF ExtractText is a REST API developed in Python that allows:
 
-## Características
+- **Extracting text** from PDF files.
+- **Converting** extracted content into Markdown (.md) format.
+- **Storing** documents in MongoDB.
+- **Managing** extracted documents through REST endpoints.
 
-- Extracción de texto de archivos PDF
-- Conversión inteligente a Markdown usando IA (Kimi)
-- API REST con FastAPI
-- Almacenamiento en MongoDB
-- Desarrollo guiado por pruebas (TDD)
-- Código limpio siguiendo principios SOLID y Clean Code
+## Features
+- PDF text extraction.
+- Markdown file conversion.
+- API REST with FastAPI.
+- MongoDB storage.
+- Test-Driven Development (TDD).
+- Clean code following SOLID principles and Clean Code.
 
-## Tecnología
+## Technology
 
-| Categoría | Tecnología |
+| Category | Technology |
 |-----------|------------|
-| Lenguaje | Python 3.10+ |
+| Language | Python 3.10+ |
 | Framework | FastAPI |
-| Base de Datos | MongoDB |
-| IA | "Actualizar" |
-| Gestión de dependencias | UV |
+| Database | MongoDB |
+| IA | "Update" |
+| Dependency management | UV |
 | Testing | Pytest |
 
-### Dependencias Principales
+### Main Dependencies
 
-- **fastapi**: Framework web moderno y rápido
-- **pydantic**: Validación de datos
-- **uvicorn**: Servidor ASGI
-- **python-multipart**: Manejo de archivos multipart
+- **fastapi**: Modern and fast web framework.
+- **pydantic**: Data validation.
+- **uvicorn**: ASGI server.
+- **python-multipart**: Multipart file handling.
 
-## Estructura del Proyecto
+## Project Structure
 
 ```
 pdf-extractext/
@@ -100,9 +100,26 @@ pdf-extractext/
 └── skills-lock.json
 ```
 
-### Arquitectura (Clean Architecture)
+#### Description of Folders
 
-El proyecto sigue una arquitectura limpia con las siguientes capas:
+- **`app/`**: Main application code.
+  - **`config/`**: Centralized application configuration.
+  - **`data/`**: Implementations of repositories and data access.
+    - **`database/`**: Database connections.
+    - **`repositories/`**: Specific implementations of repositories.
+  - **`domain/`**: Pure business logic.
+    - **`entities/`**: Domain entities.
+    - **`repositories/`**: Repository interfaces (contracts).
+    - **`use_cases/`**: Application use cases.
+  - **`presentation/`**: Presentation layer.
+    - **`routes/`**: Definition of routes and endpoints.
+    - **`schemas/`**: Pydantic schemes for validation.
+- **`tests/`**: Unit and integrated test suite.
+- **`.agents/`**: Configuring skills for the AI ​​agent.
+
+### Architecture (Clean Architecture)
+
+The project follows a clean architecture with the following layers:
 
 ```
 ┌─────────────────────────────────────────┐
@@ -119,107 +136,90 @@ El proyecto sigue una arquitectura limpia con las siguientes capas:
 └─────────────────────────────────────────┘
 ```
 
-#### Descripción de Carpetas
+## Installation and Configuration
 
-- **`app/`**: Código principal de la aplicación
-  - **`config/`**: Configuración centralizada de la aplicación
-  - **`data/`**: Implementaciones de repositorios y acceso a datos
-    - **`database/`**: Conexiones a bases de datos
-    - **`repositories/`**: Implementaciones concretas de repositorios
-  - **`domain/`**: Lógica de negocio pura
-    - **`entities/`**: Entidades del dominio
-    - **`repositories/`**: Interfaces de repositorios (contratos)
-    - **`use_cases/`**: Casos de uso de la aplicación
-  - **`presentation/`**: Capa de presentación
-    - **`routes/`**: Definición de rutas y endpoints
-    - **`schemas/`**: Esquemas Pydantic para validación
-- **`tests/`**: Suite de pruebas unitarias e integradas
-- **`.agents/`**: Configuración de skills para el agente de IA
-
-## Instalación y Configuración
-
-### Requisitos Previos
+### Prerequisites
 
 - Python 3.10 - 3.13
-- UV (gestor de paquetes y entornos virtuales)
-- MongoDB (local o remoto)
+- UV (package manager and virtual environments)
+- MongoDB (local or remote)
 
-### Instalación
+### Facility
 
-1. **Clonar el repositorio:**
+1. **Clone the repository:**
    ```bash
    git clone https://github.com/FrancoCarballoPratsUTN/pdf-extractext
    cd pdf-extractext
    ```
 
-2. **Instalar dependencias con UV:**
+2. **Install dependencies with UV:**
    ```bash
    uv sync
    ```
 
-3. **Instalar dependencias de desarrollo:**
+3. **Install development dependencies:**
    ```bash
    uv sync --extra dev
    ```
 
-### Ejecución
+### Execution
 
-**Modo desarrollo:**
+**Development mode:**
 ```bash
 uv run python main.py
 ```
 
-**Modo producción:**
+**Production mode:**
 ```bash
 uv run uvicorn app.main:app --host 0.0.0.0 --port 8000
 ```
 
-La API estará disponible en `http://localhost:8000`
+The API will be available in `http://localhost:8000`
 
 **Documentación interactive:**
 - Swagger UI: `http://localhost:8000/docs`
 - ReDoc: `http://localhost:8000/redoc`
 
-## Uso de la API
+## API usage
 
-### Endpoints Principales
+### Main Endpoints
 
-| Método | Endpoint | Descripción |
+| Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | `/api/documents/extract` | Extrae texto de un PDF y convierte a MD |
-| GET | `/api/documents/` | Lista todos los documentos |
-| GET | `/api/documents/{id}` | Obtiene un documento por ID |
-| DELETE | `/api/documents/{id}` | Elimina un documento |
+| POST | `/api/documents/extract` | Extract text from a PDF and convert to MD |
+| GET | `/api/documents/` |List all documents |
+| GET | `/api/documents/{id}` | Get a document by ID |
+| DELETE | `/api/documents/{id}` | Delete a document |
 
-### Ejemplo de Uso
+### Example of Use
 
-**Extraer texto de un PDF:**
+**Extracting text from a PDF:**
 
 ```bash
 curl -X POST "http://localhost:8000/api/documents/extract" \
   -H "accept: application/json" \
   -H "Content-Type: multipart/form-data" \
-  -F "file=@ruta/al/archivo.pdf"
+  -F "file=@ruta/al/archive.pdf"
 ```
 
-**Respuesta esperada:**
+**Expected response:**
 ```json
 {
   "id": "60d5ecb74e...",
-  "filename": "archivo.pdf",
-  "markdown_content": "# Título del Documento\n\nContenido extraído...",
+  "filename": "archive.pdf",
+  "markdown_content": "# Document Title\n\nExtracted content...",
   "created_at": "2024-01-15T10:30:00Z"
 }
 ```
 
-## Pruebas
+## Evidence
 
-### Ejecutar todas las pruebas:
+### Run all tests:
 ```bash
 uv run pytest
 ```
 
-### Ejecutar con cobertura:
+### Run with coverage:
 ```bash
 uv run pytest --cov=app --cov-report=html
 ```
@@ -230,53 +230,42 @@ uv run ruff check .
 uv run mypy app
 ```
 
-## Metodología
+## Methodology
 
-### Desarrollo Guiado por Pruebas (TDD)
+### Test-Driven Development (TDD)
 
-El proyecto sigue el ciclo Red-Green-Refactor:
+The project follows the Red-Green-Refactor cycle:
 
-1. **Red**: Escribir pruebas que inicialmente fallan
-2. **Green**: Implementar código mínimo para que las pruebas pasen
-3. **Refactor**: Mejorar el código manteniendo las pruebas en verde
+1. **Red**: Write tests that initially fail.
+2. **Green**: Implement code to make the tests pass.
+3. **Refactor**: Improve the code by keeping the tests green.
 
-### Principios de Clean Code
+### Clean Code Principles
 
-- Nombres descriptivos que reflejan la intención del código
-- Principio de responsabilidad única (SRP)
-- Principio DRY (Don't Repeat Yourself)
-- Funciones pequeñas y bien organizadas
-- Código orientado a la legibilidad y mantenibilidad
+- Descriptive names that reflect the intent of the code.
+- Single Responsibility Principle.
+- DRY Principle.
+- Small and organized functions.
+- Code geared towards readability and maintainability.
 
-## Principios de Programación
+## Programming Principles
 
-### Principios Fundamentales
-
-| Principio | Descripción |
+| Principle | Description |
 |-----------|-------------|
-| **KISS** | Keep It Simple, Stupid - Priorizar soluciones simples |
-| **DRY** | Don't Repeat Yourself - Evitar duplicación de código |
-| **YAGNI** | You Aren't Gonna Need It - No implementar funcionalidades prematuras |
-
-### Principios SOLID
-
-| Principio | Nombre | Descripción |
-|-----------|--------|-------------|
-| **S** | Responsabilidad Única | Una clase tiene una sola razón para cambiar |
-| **O** | Abierto/Cerrado | Abierto para extensión, cerrado para modificación |
-| **L** | Sustitución de Liskov | Objetos de subclase deben poder sustituir a los padres |
-| **I** | Segregación de Interfaces | Preferir muchas interfaces específicas a una general |
-| **D** | Inversión de Dependencias | Depender de abstracciones, no de concreciones |
+| **KISS** |  Prioritize simple solutions |
+| **DRY** | Avoid code duplication |
+| **YAGNI** | Do not implement premature features |
+| **SOLID** | design rules to make it easier to understand, flexible and maintainable |
 
 ### Twelve-Factor App (Parcial)
 
-- **Codebase**: Una única base de código versionada
-- **Dependencies**: Declarar y aislar las dependencias
-- **Config**: Guardar configuración en el entorno
-- **Backing Services**: Servicios tratados como recursos conectables
-- **Build, Release, Run**: Separar construcción de ejecución
-- **Processes**: Ejecución como procesos sin estado
+- **Codebase**: A single versioned codebase.
+- **Dependencies**: Declare and isolate the dependencies.
+- **Config**: Save configuration in the environment.
+- **Backing Services**: Services treated as pluggable resources.
+- **Build, Release, Run**: Separate construction from execution.
+- **Processes**: Execution as stateless processes.
 
-## Licencia
+## License
 
-Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE.txt` para más detalles.
+This project is licensed under the MIT License. See the `LICENSE.txt` file for more details.
