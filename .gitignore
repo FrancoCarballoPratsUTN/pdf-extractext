@@ -210,4 +210,4 @@ __marimo__/
 *.code-workspace
 uv.lock
 .agents
-skills-look.json
+skills-lock.json
