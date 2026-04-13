@@ -11,7 +11,13 @@ from docling.datamodel.pipeline_options import PdfPipelineOptions
 
 class DoclingConverterMd(Converter):
     def convert(self, content: bytes, name: str) -> str:
-        
+        """Converts PDF content to Markdown format using the Docling library.
+        Args:
+                content (bytes): The content of the PDF document to be converted.
+                name (str): The name of the PDF document, used for identification.
+        Returns:
+                str: The converted Markdown content as a string.
+                """
         buf = io.BytesIO(content)
         source = DocumentStream(name= name, stream=buf)
         
