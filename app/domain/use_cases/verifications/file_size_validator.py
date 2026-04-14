@@ -1,11 +1,17 @@
 from app.domain.entities.document import Document
 
 MAX_FILE_SIZE_BYTES = 15728640 
+MIN_FILE_SIZE_BYTES = 0
 
-def validate_file_size(document: Document) -> None:
+def validate_file_size(file_size: float) -> bool:
+    """
+    Checks if a file size is within the allowed limits.
 
-    if document.file_size == 0:
-        raise ValueError("The file is empty.")
+    Args:
+        file_size (float): The size of the file in bytes to be validated.
 
-    if document.file_size > MAX_FILE_SIZE_BYTES:
-        raise ValueError("The file exceeds the maximum allowed size of 15MB.")
+    Returns:
+        bool: True if the size is greater than 0 and less than 15MB, False otherwise.
+    """
+    if MIN_FILE_SIZE_BYTES < file_size < MAX_FILE_SIZE_BYTES:
+        return True 

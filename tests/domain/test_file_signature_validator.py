@@ -14,7 +14,7 @@ def test_validate_pdf_signature_success():
 
 def test_validate_pdf_signature_fails():
     document = Document(
-        file_name="falso.pdf",
+        file_name="false.pdf",
         file_type="application/pdf",
         file_size=1024,
         file_content=b"MZ\x90\x00\x03" 
