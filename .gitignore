@@ -209,3 +209,5 @@ __marimo__/
 .vscode/
 *.code-workspace
 uv.lock
+.agents
+skills-look.json
