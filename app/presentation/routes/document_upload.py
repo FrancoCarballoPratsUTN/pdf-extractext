@@ -3,7 +3,7 @@ from app.domain.use_cases.converter import ProcessDocumentUseCase
 from app.infrastructure.converters.docling_md import DoclingConverterMd
 from app.domain.use_cases.pipeline import do_validation
 from app.presentation.middleware.check_middleware import check_middleware
-from fastapi import APIRouter, UploadFile, Depends, File
+from fastapi import APIRouter, UploadFile, Depends
 
 
 router = APIRouter()

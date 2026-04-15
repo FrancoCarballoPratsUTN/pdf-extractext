@@ -1,150 +1,167 @@
 # PDF ExtractText
 
-A system that allows extracting text from PDF files and converting that content into a Markdown (.md) file, which will also be summarized.
+A REST API system that extracts text from PDF files and converts the content into Markdown (.md) format using Docling.
 
 ###### Current Status
-This system is currently under development.
+This project is currently under development.
 
-## Description
+## Overview
 
-PDF ExtractText is a REST API developed in Python that allows:
+PDF ExtractText is a REST API developed in Python that enables:
 
-- **Extracting text** from PDF files.
-- **Converting** extracted content into Markdown (.md) format.
-- **Storing** documents in MongoDB.
-- **Managing** extracted documents through REST endpoints.
+- **Uploading** PDF files via REST API
+- **Extracting text** from PDF files using Docling
+- **Converting** extracted content into Markdown (.md) format
+- **Validating** PDF files through multiple security checks
 
 ## Features
-- PDF text extraction.
-- Markdown file conversion.
-- API REST with FastAPI.
-- MongoDB storage.
-- Test-Driven Development (TDD).
-- Clean code following SOLID principles and Clean Code.
 
-## Technology
+- PDF text extraction with Docling
+- Markdown file conversion
+- REST API with FastAPI
+- PDF security validations:
+  - File type verification
+  - File size validation (max 15MB)
+  - PDF signature validation
+  - Encryption detection
+  - Liveness check
+  - Trailer validation
+- Test-Driven Development (TDD)
+- Clean Architecture
+- Clean code following SOLID principles
+
+## Technology Stack
 
 | Category | Technology |
-|-----------|------------|
-| Language | Python 3.10+ |
+|----------|------------|
+| Language | Python 3.10 - 3.13 |
 | Framework | FastAPI |
-| Database | MongoDB |
-| IA | "Update" |
-| Dependency management | UV |
-| Testing | Pytest |
+| PDF Processing | Docling |
+| Dependency Management | UV |
+| Testing | Pytest, Pytest-asyncio |
+| Linting | Ruff |
+| Type Checking | MyPy |
 
 ### Main Dependencies
 
-- **fastapi**: Modern and fast web framework.
-- **pydantic**: Data validation.
-- **uvicorn**: ASGI server.
-- **python-multipart**: Multipart file handling.
+- **fastapi**: Modern and fast web framework
+- **pydantic**: Data validation
+- **uvicorn**: ASGI server
+- **python-multipart**: Multipart file handling
+- **docling**: PDF processing and conversion
 
 ## Project Structure
 
 ```
 pdf-extractext/
-├── .agents/
-│   └── skills/
-│       ├── clean-code/
-│       │   └── SKILL.md
-│       └── tdd/
-│           ├── SKILL.md
-│           ├── deep-modules.md
-│           ├── interface-design.md
-│           ├── mocking.md
-│           ├── refactoring.md
-│           └── tests.md
 ├── app/
 │   ├── __init__.py
 │   ├── main.py
 │   ├── config/
 │   │   ├── __init__.py
 │   │   └── settings.py
-│   ├── data/
-│   │   ├── database/
-│   │   │   └── connection.py
-│   │   └── repositories/
-│   │       ├── __init__.py
-│   │       └── document_repository.py
 │   ├── domain/
 │   │   ├── __init__.py
 │   │   ├── entities/
 │   │   │   ├── __init__.py
 │   │   │   └── document.py
+│   │   ├── interfaces/
+│   │   │   ├── __init__.py
+│   │   │   └── document_converter.py
 │   │   ├── repositories/
 │   │   │   ├── __init__.py
 │   │   │   └── document_repository.py
 │   │   └── use_cases/
 │   │       ├── __init__.py
-│   │       └── document_use_cases.py
+│   │       ├── converter.py
+│   │       ├── pipeline.py
+│   │       └── verifications/
+│   │           ├── encryptation_check.py
+│   │           ├── file_signature_validator.py
+│   │           ├── file_size_validator.py
+│   │           ├── liveness_check.py
+│   │           ├── trailer_check.py
+│   │           └── type_check.py
+│   ├── infrastructure/
+│   │   ├── converters/
+│   │   │   └── docling_md.py
+│   │   └── persistence/
+│   │       ├── database/
+│   │       │   └── connection.py
+│   │       └── repositories/
+│   │           └── document_repository.py
 │   └── presentation/
 │       ├── __init__.py
+│       ├── middleware/
+│       │   └── check_middleware.py
 │       ├── routes/
 │       │   ├── __init__.py
-│       │   └── document.py
+│       │   └── document_upload.py
 │       └── schemas/
 │           ├── __init__.py
-│           └── document.py
+│           └── document_upload.py
 ├── tests/
 │   ├── conftest.py
 │   ├── data/
 │   │   └── test_document_repository.py
 │   ├── domain/
-│   │   └── test_document.py
+│   │   ├── mock_pdf.py
+│   │   ├── test_convert.py
+│   │   ├── test_encryptation_check.py
+│   │   ├── test_file_signature_validator.py
+│   │   ├── test_file_size_validator.py
+│   │   ├── test_liveness_check.py
+│   │   └── test_trailer_check.py
 │   └── presentation/
 │       └── test_routes.py
-├── main.py
 ├── pyproject.toml
-├── README.md
-└── skills-lock.json
+├── .python-version
+├── .gitignore
+└── README.md
 ```
 
-#### Description of Folders
+### Layer Descriptions
 
-- **`app/`**: Main application code.
-  - **`config/`**: Centralized application configuration.
-  - **`data/`**: Implementations of repositories and data access.
-    - **`database/`**: Database connections.
-    - **`repositories/`**: Specific implementations of repositories.
-  - **`domain/`**: Pure business logic.
-    - **`entities/`**: Domain entities.
-    - **`repositories/`**: Repository interfaces (contracts).
-    - **`use_cases/`**: Application use cases.
-  - **`presentation/`**: Presentation layer.
-    - **`routes/`**: Definition of routes and endpoints.
-    - **`schemas/`**: Pydantic schemes for validation.
-- **`tests/`**: Unit and integrated test suite.
-- **`.agents/`**: Configuring skills for the AI ​​agent.
+- **`app/domain/`**: Core business logic (framework-agnostic)
+  - **`entities/`**: Domain entities (Document dataclass)
+  - **`interfaces/`**: Contracts/ports for external dependencies
+  - **`repositories/`**: Repository interfaces
+  - **`use_cases/`**: Application business rules
+    - **`verifications/`**: PDF validation checks
+- **`app/infrastructure/`**: External implementations
+  - **`converters/`**: PDF to Markdown converter implementation
+  - **`persistence/`**: Database connections and repository implementations
+- **`app/presentation/`**: API layer
+  - **`middleware/`**: Request/response middleware
+  - **`routes/`**: API endpoint definitions
+  - **`schemas/`**: Pydantic schemas for request/response validation
+- **`tests/`**: Test suite
 
 ### Architecture (Clean Architecture)
 
-The project follows a clean architecture with the following layers:
-
 ```
 ┌─────────────────────────────────────────┐
-│           PRESENTATION                  │
-│  (Routes, Schemas, API Endpoints)       │
+│            PRESENTATION                 │
+│   (Routes, Schemas, Middleware, API)    │
 ├─────────────────────────────────────────┤
-│             DOMAIN                      │
-│  (Entities, Use Cases, Repository       │
-│   Interfaces)                           │
+│              DOMAIN                      │
+│  (Entities, Interfaces, Use Cases,      │
+│   Verifications)                         │
 ├─────────────────────────────────────────┤
-│              DATA                       │
-│  (Repository Implementations, Database  │
-│   Connection, External Services)        │
+│           INFRASTRUCTURE                 │
+│  (Converters, Persistence, External     │
+│   Services)                              │
 └─────────────────────────────────────────┘
 ```
 
-## Installation and Configuration
+## Installation
 
 ### Prerequisites
 
 - Python 3.10 - 3.13
 - UV (package manager and virtual environments)
-- MongoDB (local or remote)
 
-### Facility
+### Setup
 
 1. **Clone the repository:**
    ```bash
@@ -162,11 +179,11 @@ The project follows a clean architecture with the following layers:
    uv sync --extra dev
    ```
 
-### Execution
+## Running
 
 **Development mode:**
 ```bash
-uv run python main.py
+uv run python app/main.py
 ```
 
 **Production mode:**
@@ -174,45 +191,47 @@ uv run python main.py
 uv run uvicorn app.main:app --host 0.0.0.0 --port 8000
 ```
 
-The API will be available in `http://localhost:8000`
+The API will be available at `http://localhost:8000`
 
-**Documentación interactive:**
+**Interactive documentation:**
 - Swagger UI: `http://localhost:8000/docs`
 - ReDoc: `http://localhost:8000/redoc`
 
-## API usage
+## API Usage
 
-### Main Endpoints
+### Endpoints
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | `/api/documents/extract` | Extract text from a PDF and convert to MD |
-| GET | `/api/documents/` |List all documents |
-| GET | `/api/documents/{id}` | Get a document by ID |
-| DELETE | `/api/documents/{id}` | Delete a document |
+| POST | `/upload` | Upload a PDF file and convert to Markdown |
 
-### Example of Use
+### Example Request
 
-**Extracting text from a PDF:**
-
+**Uploading a PDF file:**
 ```bash
-curl -X POST "http://localhost:8000/api/documents/extract" \
-  -H "accept: application/json" \
+curl -X POST "http://localhost:8000/upload" \
   -H "Content-Type: multipart/form-data" \
-  -F "file=@ruta/al/archive.pdf"
+  -F "file=@path/to/document.pdf"
 ```
 
-**Expected response:**
-```json
-{
-  "id": "60d5ecb74e...",
-  "filename": "archive.pdf",
-  "markdown_content": "# Document Title\n\nExtracted content...",
-  "created_at": "2024-01-15T10:30:00Z"
-}
-```
+**Response:**
+The API returns the extracted Markdown content as a string.
 
-## Evidence
+### Validation Rules
+
+- **File type**: Must be `application/pdf`
+- **File size**: Maximum 15MB
+
+### PDF Security Checks
+
+The system performs the following validations on uploaded PDFs:
+
+1. **Signature Validation**: Verifies the PDF file signature
+2. **Liveness Check**: Ensures the PDF is not corrupted
+3. **Trailer Check**: Validates the PDF trailer structure
+4. **Encryption Check**: Detects encrypted PDFs (rejected)
+
+## Testing
 
 ### Run all tests:
 ```bash
@@ -224,9 +243,18 @@ uv run pytest
 uv run pytest --cov=app --cov-report=html
 ```
 
-### Linting y type checking:
+### Run specific test file:
+```bash
+uv run pytest tests/domain/test_convert.py
+```
+
+### Linting:
 ```bash
 uv run ruff check .
+```
+
+### Type checking:
+```bash
 uv run mypy app
 ```
 
@@ -236,36 +264,27 @@ uv run mypy app
 
 The project follows the Red-Green-Refactor cycle:
 
-1. **Red**: Write tests that initially fail.
-2. **Green**: Implement code to make the tests pass.
-3. **Refactor**: Improve the code by keeping the tests green.
+1. **Red**: Write tests that initially fail
+2. **Green**: Implement code to make the tests pass
+3. **Refactor**: Improve code while keeping tests green
 
 ### Clean Code Principles
 
-- Descriptive names that reflect the intent of the code.
-- Single Responsibility Principle.
-- DRY Principle.
-- Small and organized functions.
-- Code geared towards readability and maintainability.
+- Descriptive names that reflect intent
+- Single Responsibility Principle
+- DRY (Don't Repeat Yourself)
+- Small and focused functions
+- Code geared toward readability and maintainability
 
-## Programming Principles
+### Design Principles
 
 | Principle | Description |
 |-----------|-------------|
-| **KISS** |  Prioritize simple solutions |
-| **DRY** | Avoid code duplication |
-| **YAGNI** | Do not implement premature features |
-| **SOLID** | design rules to make it easier to understand, flexible and maintainable |
-
-### Twelve-Factor App (Parcial)
-
-- **Codebase**: A single versioned codebase.
-- **Dependencies**: Declare and isolate the dependencies.
-- **Config**: Save configuration in the environment.
-- **Backing Services**: Services treated as pluggable resources.
-- **Build, Release, Run**: Separate construction from execution.
-- **Processes**: Execution as stateless processes.
+| **KISS** | Keep It Simple, Stupid |
+| **DRY** | Don't Repeat Yourself |
+| **YAGNI** | You Aren't Gonna Need It |
+| **SOLID** | Single responsibility, Open-closed, Liskov substitution, Interface segregation, Dependency inversion |
 
 ## License
 
-This project is licensed under the MIT License. See the `LICENSE.txt` file for more details.
+This project is licensed under the MIT License. See the `LICENSE` file for more details.
