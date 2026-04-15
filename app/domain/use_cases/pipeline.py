@@ -19,7 +19,7 @@ def do_validation(document_content: bytes)-> bool:
     if not trailer_check(document_content):
         print("Trailer check failed.")
         return False
-    if not encryptation_check(document_content):
+    if encryptation_check(document_content):
         print("Encryptation check failed.")
         return False
     return True

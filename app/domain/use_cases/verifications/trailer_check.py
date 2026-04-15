@@ -10,4 +10,4 @@ def trailer_check(document_content: bytes) -> bool:
         bool: True if the trailer is valid, False otherwise.
 
     """
-    return document_content.endswith(b'%%EOF')
+    return  b'%%EOF' in document_content[-100:]
