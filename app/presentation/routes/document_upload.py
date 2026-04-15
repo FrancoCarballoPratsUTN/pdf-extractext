@@ -18,8 +18,8 @@ async def upload_file(file: UploadFile = Depends(check_middleware))-> str:
     converter = DoclingConverterMd()
     file_content = await file.read()
 
-    if do_validation(file_content): 
-        raise HTTPException(status_code= 400, details= "Invalid PDF")
+    if not do_validation(file_content): 
+        raise HTTPException(status_code= 400, detail= "Invalid PDF")
 
     conversor = ProcessDocumentUseCase(converter)
     markdown = conversor.execute(file_content)

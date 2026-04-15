@@ -1,15 +1,13 @@
-from app.domain.entities.document import Document
-
 PDF_MAGIC_NUMBER = b"%PDF-"
 
-def validate_pdf_signature(document: Document) -> bool:
+def validate_pdf_signature(file_content: bytes) -> bool:
 
     """Validates that the provided document has a valid PDF signature
 
     Args:
-        document(Document): The document to be validated
+        file_content (bytes): The content of the file to be validated.
     Returns:
-        bool: True if the document has a valid PDF signature, False otherwise
+        bool: True if the file has a valid PDF signature, False otherwise
     """
 
-    return document.file_content.startswith(PDF_MAGIC_NUMBER)
+    return file_content.startswith(PDF_MAGIC_NUMBER)

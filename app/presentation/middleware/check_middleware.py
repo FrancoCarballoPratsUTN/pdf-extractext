@@ -12,11 +12,11 @@ def check_middleware(file: UploadFile =File(...))-> UploadFile:
     file_type = file.content_type 
     file_size = file.size
 
-    if type_check(file_type=file_type):
+    if not type_check(file_type=file_type):
         raise HTTPException(status_code= 400, detail= "Invalid File")
 
-    if validate_file_size(file_size=file_size):
-        raise HTTPException( status_codes= 400, details= "the file size is not within the limite")
+    if not validate_file_size(file_size=file_size):
+        raise HTTPException( status_code= 400, detail= "the file size is not within the limite")
     
     return file
 
