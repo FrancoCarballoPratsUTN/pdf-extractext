@@ -10,16 +10,16 @@ def do_validation(document_content: bytes)-> bool:
     Returns:
         bool: True if all verification steps pass, False otherwise.
     """
-    if validate_pdf_signature(document_content):
+    if not validate_pdf_signature(document_content):
         print("File signature validation failed.")
         return False
-    if liveness_check(document_content):
+    if not liveness_check(document_content):
         print("Liveness check failed.")
         return False
-    if trailer_check(document_content):
+    if not trailer_check(document_content):
         print("Trailer check failed.")
         return False
-    if encryptation_check(document_content):
+    if not encryptation_check(document_content):
         print("Encryptation check failed.")
         return False
     return True
