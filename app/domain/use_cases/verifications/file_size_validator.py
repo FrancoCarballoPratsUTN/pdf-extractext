@@ -1,5 +1,3 @@
-from app.domain.entities.document import Document
-
 MAX_FILE_SIZE_BYTES = 15728640 
 MIN_FILE_SIZE_BYTES = 0
 
@@ -13,5 +11,4 @@ def validate_file_size(file_size: float) -> bool:
     Returns:
         bool: True if the size is greater than 0 and less than 15MB, False otherwise.
     """
-    if MIN_FILE_SIZE_BYTES < file_size < MAX_FILE_SIZE_BYTES:
-        return True 
+    return MIN_FILE_SIZE_BYTES < file_size < MAX_FILE_SIZE_BYTES

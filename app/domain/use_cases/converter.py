@@ -5,13 +5,12 @@ class ProcessDocumentUseCase:
     def __init__(self, converter: Converter):
         self.converter = converter  
 
-    def execute(self, file_content: bytes, name:str):
+    def execute(self, file_content: bytes):
         """
         Executes the document processing using the provided converter.
         Args:
                 file_content (bytes): The content of the document to be processed.
-                name (str): The name of the file being processed.
         Returns:
-                bytes: The processed document content.
+                str: The processed document content.
         """
-        return self.converter.convert(file_content, name)
+        return self.converter.convert(file_content)

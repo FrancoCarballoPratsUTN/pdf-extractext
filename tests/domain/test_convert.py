@@ -1,23 +1,21 @@
-from app.infrastructure.converters.docling_md import DoclingConverterMd
+from app.infrastructure.converters.extract_text import ExtractText
 from tests.domain.mock_pdf import create_mock_pdf
-from docling.exceptions import ConversionError 
 import pytest
 
 def test_invalid_pdf_conversion():
-    """Test the conversion of an invalid PDF to Markdown using the DoclingConverter."""
+    """Test the conversion of an invalid PDF file using the ExtractText converter."""
     invalid_pdf_content = b"%PDF-1.4\n%...\n"  
-    converter = DoclingConverterMd()
+    converter = ExtractText()
+    with pytest.raises(Exception):
+        converter.convert(invalid_pdf_content)
 
-    with pytest.raises(ConversionError):
-        converter.convert(invalid_pdf_content, name="invalid_sample.pdf")
 
-
-def test_docling_conversion():
-    """Test the conversion of a PDF to Markdown using the DoclingConverter."""
+def test_extract_text_conversion():
+    """Test the conversion of a PDF to text using the ExtractText converter."""
     pdf_content = create_mock_pdf(encrypted= False)
-    converter = DoclingConverterMd()
-    markdown_result = converter.convert(pdf_content, name="sample.pdf")
+    converter = ExtractText()
+    text_result = converter.convert(pdf_content)
 
-    assert markdown_result.strip() != "", "The converted Markdown should not be empty."
+    assert text_result.strip() != "", "The converted text should not be empty."
 
 
