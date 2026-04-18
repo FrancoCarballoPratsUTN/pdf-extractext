@@ -4,12 +4,17 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 import io
 
-def create_mock_pdf(encrypted: bool, password: str = "123456") -> bytes:
+def create_mock_pdf(encrypted: bool, password: str = "123456", is_image: bool = False) -> bytes:
     """Helper function to create a mock PDF content."""
     packet = io.BytesIO()
     can = canvas.Canvas(packet, pagesize=letter)
-    can.setFont("Helvetica", 12)
-    can.drawString(100, 680, "It is a test PDF document.")
+
+    if not is_image:
+        can.setFont("Helvetica", 12)
+        can.drawString(100, 680, "It is a test PDF document.")
+    else:
+        can.rect(100, 600, 400, 100, fill=0) 
+
     can.save()
     
     packet.seek(0)
