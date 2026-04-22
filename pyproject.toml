@@ -12,7 +12,8 @@ dependencies = [
     "python-multipart==0.0.26",
     "uvicorn[standard]==0.44.0",
     "python-dotenv==1.2.2",
-    "pypdf==6.10.1"
+    "pypdf==6.10.1",
+    "pymongo==4.17.0"
     
 ]
 
@@ -26,6 +27,7 @@ dev = [
     "mypy>=1.11.0",
     "reportlab==4.4.10",
     "func-timeout==4.3.5",
+    "mongomock==4.3.0"
     
 ]
 
