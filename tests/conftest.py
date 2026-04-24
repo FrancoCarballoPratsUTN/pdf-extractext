@@ -1,4 +1,4 @@
-from app.presentation.schemas.document import Document
+from app.domain.entities.document import Document
 from datetime import datetime
 import pytest
 

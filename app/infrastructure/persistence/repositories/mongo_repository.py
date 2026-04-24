@@ -1,8 +1,9 @@
+from dataclasses import asdict
 from pymongo import ReturnDocument
 from app.infrastructure.persistence.database.connection import get_collection
-from app.infrastructure.persistence.document_repository import DocumentRepository
+from app.domain.repositories.document_repository import DocumentRepository
 from app.infrastructure.persistence.repositories.to_dto import to_document_dto
-from app.presentation.schemas.document import Document
+from app.domain.entities.document import Document
 
 class MongoRepository(DocumentRepository):
     """MongoDB implementation of the DocumentRepository interface."""
@@ -16,7 +17,8 @@ class MongoRepository(DocumentRepository):
         Returns:            
             Document: The saved document.
         """
-        self.collection.insert_one(document.model_dump())
+        dict_document = asdict(document)
+        self.collection.insert_one(dict_document)
         return document
 
     def find_by_checksum(self, document_checksum: str)-> Document:
