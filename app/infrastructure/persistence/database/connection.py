@@ -12,6 +12,7 @@ password = os.getenv("MONGO_PASSWORD")
 client = MongoClient(host=host, port=port, username=user, password=password)
 db = client['pdf_extractext']
 collection = db["file"]
+collection.create_index("mi_llave_unica", unique=True)
 
 def get_collection():
     return collection

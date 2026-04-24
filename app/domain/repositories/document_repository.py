@@ -7,11 +7,11 @@ class DocumentRepository(ABC):
         pass
 
     @abstractmethod
-    def find_by_checksum(self, document_checksum, document):
+    def find_by_checksum(self, document_checksum):
         pass
 
     @abstractmethod
-    def update(self, document):
+    def update(self, document_checksum, new_data):
         pass
 
     @abstractmethod

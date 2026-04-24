@@ -1,31 +1,33 @@
 from fastapi import HTTPException
 from app.domain.use_cases.converter import ProcessDocumentUseCase
-from app.domain.use_cases.flow_validation import do_validation
 from app.presentation.middleware.check_middleware import check_middleware
-from app.infrastructure.converters.extract_text import ExtractText
 from fastapi import APIRouter, UploadFile, Depends
+from app.presentation.schemas.document import Document
 
 
 router = APIRouter()
 
-@router.post('/upload')
-async def upload_file(file_validate: UploadFile = Depends(check_middleware))-> str:
-    """"
-    Endpoint to upload a PDF file for text extraction.
-    Args:        file (UploadFile): The PDF file to be uploaded.
-    Returns:     str: file parse to text.
+@router.post('/upload', response_model=Document)
+async def upload_file(file_validate: UploadFile = Depends(check_middleware))-> Document:
+    """Endpoint to upload a PDF file for text extraction.
+    Args:
+        file (UploadFile): The PDF file to be uploaded.
+    Returns:
+        Document: The generated document entity only with the extracted text.
     """
-    converter = ExtractText()
-    await file_validate.seek(0)
     file_content = await file_validate.read()
+    conversor = ProcessDocumentUseCase()
     
-    if not do_validation(file_content): 
-        raise HTTPException(status_code= 400, detail= "Invalid PDF")
+    try:
+        document_generated = conversor.execute(file_content, file_validate.filename)
+        return document_generated
 
-    conversor = ProcessDocumentUseCase(converter)
-    text = conversor.execute(file_content)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
-    return text
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="An error occurred while processing the document.")
+    
 
 
     

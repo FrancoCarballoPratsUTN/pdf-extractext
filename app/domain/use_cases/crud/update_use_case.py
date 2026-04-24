@@ -1,9 +1,12 @@
-from app.infrastructure.persistence.document_repository import DocumentRepository
-
+from app.infrastructure.persistence.repositories.mongo_repository import MongoRepository
 class UpdateDocumentUseCase:
-
-    def __init__(self, repository: DocumentRepository):
-        pass
+    """Use case for updating a document in the repository."""
+    def __init__(self):
+        self._repository = MongoRepository()       
     
-    def execute(self, document_id, updated_data):
-        pass
+    def execute(self, document_checksum: str, updated_data: dict):
+        updated_document = self._repository.update(document_checksum, updated_data)
+        if not updated_document:
+            raise ValueError("Document not found.")
+
+        return updated_document
