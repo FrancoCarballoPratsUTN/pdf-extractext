@@ -1,6 +1,6 @@
 # PDF ExtractText
 
-A REST API system that extracts text from PDF files and converts the content into Markdown (.md) format.
+A REST API system that extracts text from PDF files and converts the content into text (.txt) format.
 
 **Developers:** 
 * Franco Carballo Prats - https://github.com/FrancoCarballoPratsUTN
@@ -15,13 +15,13 @@ PDF ExtractText is a REST API developed in Python that enables:
 
 - **Uploading** PDF files via REST API
 - **Extracting text** from PDF files using pypdf
-- **Converting** extracted content into Markdown (.md) format
+- **Converting** extracted content into text (.txt) format
 - **Validating** PDF files through multiple security checks
 
 ## Features
 
 - PDF text extraction with pypdf
-- Markdown file conversion
+- Text file conversion
 - REST API with FastAPI
 - PDF security validations:
   - File type verification
@@ -66,17 +66,15 @@ pdf-extractext/
 │   ├── main.py
 │   ├── config/
 │   │   ├── __init__.py
-│   │   ├── settings.py
-│   │   └── .env
+│   │   └── settings.py
 │   ├── domain/
 │   │   ├── __init__.py
 │   │   ├── entities/
 │   │   │   ├── __init__.py
 │   │   │   └── document.py
-│   │   ├── exceptions/
-│   │   │   ├── __init__.py
+|   │   ├── exceptions/
 │   │   │   └── domain_exceptions.py
-│   │   ├── interfaces/
+│   │   ├── contract/
 │   │   │   ├── __init__.py
 │   │   │   └── document_converter.py
 │   │   ├── repositories/
@@ -88,17 +86,15 @@ pdf-extractext/
 │   │       ├── converter.py
 │   │       ├── to_dto.py
 │   │       ├── crud/
-│   │       │   ├── __init__.py
 │   │       │   ├── delete_use_case.py
 │   │       │   ├── find_use_case.py
 │   │       │   ├── save_use_case.py
-│   │       │   └── update_use_case.py
+│   │       │   ├── update_use_case.py
 │   │       ├── flows/
-│   │       │   ├── __init__.py
+│   │       │   ├── pipelines.py
 │   │       │   ├── flow_building.py
-│   │       │   └── flow_validation.py
+│   │       │   ├── flow_validation.py
 │   │       └── verifications/
-│   │           ├── __init__.py
 │   │           ├── encryptation_check.py
 │   │           ├── file_only_has_imagen.py
 │   │           ├── file_signature_validator.py
@@ -108,12 +104,9 @@ pdf-extractext/
 │   │           └── type_check.py
 │   ├── infrastructure/
 │   │   ├── converters/
-│   │   │   ├── __init__.py
 │   │   │   └── extract_text.py
 │   │   └── persistence/
-│   │       ├── __init__.py
 │   │       ├── database/
-│   │       │   ├── __init__.py
 │   │       │   └── connection.py
 │   │       └── repositories/
 │   │           ├── __init__.py
@@ -121,13 +114,12 @@ pdf-extractext/
 │   └── presentation/
 │       ├── __init__.py
 │       ├── middleware/
-│       │   ├── __init__.py
 │       │   └── check_middleware.py
 │       ├── routes/
 │       │   ├── __init__.py
 │       │   ├── document_delete.py
 │       │   ├── document_find_by_checksum.py
-│       │   ├── document_save.py
+│       │   ├── documet_save.py
 │       │   ├── document_update.py
 │       │   └── document_upload.py
 │       └── schemas/
@@ -136,42 +128,45 @@ pdf-extractext/
 ├── tests/
 │   ├── conftest.py
 │   ├── data/
-│   │   ├── __init__.py
 │   │   ├── mock_repository.py
 │   │   ├── test_delete.py
 │   │   ├── test_find_by_checksum.py
 │   │   ├── test_save.py
-│   │   └── test_update.py
-│   └── domain/
-│       ├── __init__.py
-│       ├── mock_pdf.py
-│       ├── test_checksum.py
-│       ├── test_convert.py
-│       ├── test_encryptation_check.py
-│       ├── test_file_only_has_imagen.py
-│       ├── test_file_signature_validator.py
-│       ├── test_file_size_validator.py
-│       ├── test_liveness_check.py
-│       └── test_trailer_check.py
-├── .gitignore
-├── .python-version
-├── LICENSE
+│   │   ├── test_update.py
+│   ├── domain/
+│   │   ├── mock_pdf.py
+│   │   ├── test_checksum.py
+│   │   ├── test_convert.py
+│   │   ├── test_encryptation_check.py
+│   │   ├── test_file_only_has_imagen.py
+│   │   ├── test_file_signature_validator.py
+│   │   ├── test_file_size_validator.py
+│   │   ├── test_liveness_check.py
+│   │   └── test_trailer_check.py
+│   └── presentation/
+│       └── conftest.py
 ├── pyproject.toml
-├── README.md
-└── uv.lock
+├── .python-version
+├── .gitignore
+└── README.md
 ```
 
 ### Layer Descriptions
-
+- **`app/config/`**: Environment management 
 - **`app/domain/`**: Core business logic (framework-agnostic)
   - **`entities/`**: Domain entities (Document dataclass)
+  - **`exceptions/`**: Define custom errors
   - **`interfaces/`**: Contracts/ports for external dependencies
   - **`repositories/`**: Repository interfaces
   - **`use_cases/`**: Application business rules
+    - **`crud/`**: Basic database operations
+    - **`flows/`**: Controls the validation flow and the building flows
     - **`verifications/`**: PDF validation checks
 - **`app/infrastructure/`**: External implementations
-  - **`converters/`**: PDF to Markdown converter implementation
+  - **`converters/`**: PDF to Text converter implementation
   - **`persistence/`**: Database connections and repository implementations
+    - **`datebase/`**: Database connection
+    - **`repositories/`**: Manages the MongoDB repository
 - **`app/presentation/`**: API layer
   - **`middleware/`**: Request/response middleware
   - **`routes/`**: API endpoint definitions
@@ -255,7 +250,11 @@ The API will be available at `http://localhost:8000`
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | `/upload` | Upload a PDF file and convert to Markdown |
+| POST | `/upload` | Upload a PDF file and convert to text |
+| PUT | `/update` | Update a document |
+| POST | `/save` | Create and register a new document |
+| GET | `/find` | Consult a document |
+| DELETE | `/delete` | Delete a document |
 
 ### Example Request
 
@@ -267,7 +266,7 @@ curl -X POST "http://localhost:8000/upload" \
 ```
 
 **Response:**
-The API returns the extracted Markdown content as a string.
+The API returns the extracted text content as a string.
 
 ### Validation Rules
 
@@ -278,10 +277,12 @@ The API returns the extracted Markdown content as a string.
 
 The system performs the following validations on uploaded PDFs:
 
-1. **Signature Validation**: Verifies the PDF file signature
-2. **Liveness Check**: Ensures the PDF is not corrupted
-3. **Trailer Check**: Validates the PDF trailer structure
-4. **Encryption Check**: Detects encrypted PDFs (rejected)
+1. **Encryption Check**: Detects encrypted PDFs (rejected)
+2. **File only has imagen**: The file only contains an image, no text
+3. **Signature Validation**: Verifies the PDF file signature
+4. **File size validator**: Maximum and minimum file size
+5. **Liveness Check**: Ensures the PDF is not corrupted
+6. **Trailer Check**: Validates the PDF trailer structure
 
 ## Testing
 
