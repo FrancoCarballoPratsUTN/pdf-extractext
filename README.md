@@ -180,13 +180,13 @@ pdf-extractext/
 │            PRESENTATION                 │
 │   (Routes, Schemas, Middleware, API)    │
 ├─────────────────────────────────────────┤
-│              DOMAIN                      │
+│              DOMAIN                     │
 │  (Entities, Interfaces, Use Cases,      │
-│   Verifications)                         │
+│   Verifications)                        │
 ├─────────────────────────────────────────┤
-│           INFRASTRUCTURE                 │
+│           INFRASTRUCTURE                │
 │  (Converters, Persistence, External     │
-│   Services)                              │
+│   Services)                             │
 └─────────────────────────────────────────┘
 ```
 
