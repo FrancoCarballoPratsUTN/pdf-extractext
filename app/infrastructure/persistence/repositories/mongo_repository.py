@@ -1,15 +1,16 @@
+from app.domain.exceptions.domain_exceptions import DocumentAlreadyExistsError
+from app.domain.exceptions.domain_exceptions import DocumentNotFoundError
 from pymongo.errors import DuplicateKeyError
 from dataclasses import asdict
 from pymongo import ReturnDocument
-from app.infrastructure.persistence.database.connection import get_collection
 from app.domain.repositories.document_repository import DocumentRepository
 from app.domain.use_cases.to_dto import to_document_dto
 from app.domain.entities.document import Document
 
 class MongoRepository(DocumentRepository):
     """MongoDB implementation of the DocumentRepository interface."""
-    def __init__(self):
-        self.collection = get_collection()
+    def __init__(self, collection):
+        self.collection = collection
 
     def save(self, document: Document)-> Document:
         """Saves a document to the MongoDB collection.
@@ -23,7 +24,7 @@ class MongoRepository(DocumentRepository):
             self.collection.insert_one(dict_document)
             return document
         except DuplicateKeyError:
-            raise ValueError(f"El checksum {document.checksum} ya existe.")
+            raise DocumentAlreadyExistsError(f"Checksum {document.checksum} already exists.")
 
     def find_by_checksum(self, document_checksum: str)-> Document:
         """Finds a document by its checksum.
@@ -33,9 +34,9 @@ class MongoRepository(DocumentRepository):
             Document or None: The found document or None if not found.
         """
         document = self.collection.find_one({"checksum": document_checksum})
-        
+
         if not document:
-            raise ValueError("Document not found.")
+            raise DocumentNotFoundError("Document not found.")
 
         return to_document_dto(document) 
 
@@ -51,7 +52,7 @@ class MongoRepository(DocumentRepository):
                                                             {"$set": new_data},
                                                             return_document=ReturnDocument.AFTER)
         if not updated_data:
-            raise ValueError("Document not found.")
+            raise DocumentNotFoundError("Document not found.")
 
         return to_document_dto(updated_data)
 
@@ -65,6 +66,6 @@ class MongoRepository(DocumentRepository):
         result = self.collection.delete_one({"checksum": document_checksum})
 
         if result.deleted_count == 0:
-            raise ValueError(f"No se encontró el documento con checksum {document_checksum}")
+            raise DocumentNotFoundError(f"Document with checksum {document_checksum} not found.")
 
         return {"message": "Document deleted successfully."}

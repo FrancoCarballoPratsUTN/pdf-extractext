@@ -1,3 +1,4 @@
+from app.domain.exceptions.domain_exceptions import DocumentValidationError
 from app.domain.use_cases.flows.flow_validation import do_validation
 from app.domain.use_cases.flows.flow_building import flow_building
 from app.domain.entities.document import Document
@@ -17,7 +18,7 @@ class ProcessDocumentUseCase:
                 Document: The processed document entity.
         """
         if not do_validation(file_content): 
-            raise ValueError("Invalid PDF or corrupted file.")
+            raise DocumentValidationError("Invalid PDF or corrupted file.")
 
         text = self.converter.convert(file_content)
         text_encode = text.encode('utf-8')

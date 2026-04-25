@@ -1,3 +1,4 @@
+from app.domain.use_cases.verifications.file_only_has_imagen import file_has_imagen
 from app.domain.use_cases.verifications.encryptation_check import encryptation_check
 from app.domain.use_cases.verifications.file_signature_validator import validate_pdf_signature
 from app.domain.use_cases.verifications.liveness_check import liveness_check  
@@ -21,5 +22,8 @@ def do_validation(document_content: bytes)-> bool:
         return False
     if encryptation_check(document_content):
         print("Encryptation check failed.")
+        return False
+    if not file_has_imagen(document_content):
+        print("File only has image check failed.")
         return False
     return True

@@ -1,3 +1,4 @@
+from app.domain.exceptions.domain_exceptions import DocumentChecksumError
 import pytest
 from app.domain.use_cases.checksum import generate_checksum
 
@@ -16,5 +17,5 @@ def test_different_documents_generate_different_checksums():
     assert c1 != c2
 
 def test_empty_document_raises_error():
-    with pytest.raises(ValueError):
+    with pytest.raises(DocumentChecksumError):
         generate_checksum(b"")
