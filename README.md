@@ -1,6 +1,10 @@
 # PDF ExtractText
 
-A REST API system that extracts text from PDF files and converts the content into Markdown (.md) format using Docling.
+A REST API system that extracts text from PDF files and converts the content into Markdown (.md) format.
+
+**Developers:** 
+* Franco Carballo Prats - [https://github.com/FrancoCarballoPratsUTN]
+* Michaux Daiana Macarena - [https://github.com/Macamichaux]
 
 ###### Current Status
 This project is currently under development.
@@ -10,13 +14,13 @@ This project is currently under development.
 PDF ExtractText is a REST API developed in Python that enables:
 
 - **Uploading** PDF files via REST API
-- **Extracting text** from PDF files using Docling
+- **Extracting text** from PDF files using pypdf
 - **Converting** extracted content into Markdown (.md) format
 - **Validating** PDF files through multiple security checks
 
 ## Features
 
-- PDF text extraction with Docling
+- PDF text extraction with pypdf
 - Markdown file conversion
 - REST API with FastAPI
 - PDF security validations:
@@ -34,9 +38,9 @@ PDF ExtractText is a REST API developed in Python that enables:
 
 | Category | Technology |
 |----------|------------|
-| Language | Python 3.10 - 3.13 |
+| Language | Python 3.14 |
 | Framework | FastAPI |
-| PDF Processing | Docling |
+| PDF Processing | pypdf |
 | Dependency Management | UV |
 | Testing | Pytest, Pytest-asyncio |
 | Linting | Ruff |
@@ -46,9 +50,12 @@ PDF ExtractText is a REST API developed in Python that enables:
 
 - **fastapi**: Modern and fast web framework
 - **pydantic**: Data validation
+- **pydantic-settings**: Settings management
 - **uvicorn**: ASGI server
 - **python-multipart**: Multipart file handling
-- **docling**: PDF processing and conversion
+- **pypdf**: PDF processing and text extraction
+- **pymongo**: MongoDB database driver
+- **python-dotenv**: Environment variable loading
 
 ## Project Structure
 
@@ -154,11 +161,22 @@ pdf-extractext/
 └─────────────────────────────────────────┘
 ```
 
-## Installation
+## Requirements
+
+### System Requirements
+
+- **Operating System**: Windows 10 or later, macOS, Linux
+- **Python**: Version 3.14
+- **UV**: Latest version (package manager)
+- **MongoDB**: Required for document persistence (local or remote instance)
+
+### Python Dependencies
+
+All dependencies are managed via `pyproject.toml` and installed via UV. See the [Technology Stack](#technology-stack) section for more details.
 
 ### Prerequisites
 
-- Python 3.10 - 3.13
+- Python 3.14
 - UV (package manager and virtual environments)
 
 ### Setup
