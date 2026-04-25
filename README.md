@@ -66,12 +66,16 @@ pdf-extractext/
 │   ├── main.py
 │   ├── config/
 │   │   ├── __init__.py
-│   │   └── settings.py
+│   │   ├── settings.py
+│   │   └── .env
 │   ├── domain/
 │   │   ├── __init__.py
 │   │   ├── entities/
 │   │   │   ├── __init__.py
 │   │   │   └── document.py
+│   │   ├── exceptions/
+│   │   │   ├── __init__.py
+│   │   │   └── domain_exceptions.py
 │   │   ├── interfaces/
 │   │   │   ├── __init__.py
 │   │   │   └── document_converter.py
@@ -80,10 +84,23 @@ pdf-extractext/
 │   │   │   └── document_repository.py
 │   │   └── use_cases/
 │   │       ├── __init__.py
+│   │       ├── checksum.py
 │   │       ├── converter.py
-│   │       ├── pipeline.py
+│   │       ├── to_dto.py
+│   │       ├── crud/
+│   │       │   ├── __init__.py
+│   │       │   ├── delete_use_case.py
+│   │       │   ├── find_use_case.py
+│   │       │   ├── save_use_case.py
+│   │       │   └── update_use_case.py
+│   │       ├── flows/
+│   │       │   ├── __init__.py
+│   │       │   ├── flow_building.py
+│   │       │   └── flow_validation.py
 │   │       └── verifications/
+│   │           ├── __init__.py
 │   │           ├── encryptation_check.py
+│   │           ├── file_only_has_imagen.py
 │   │           ├── file_signature_validator.py
 │   │           ├── file_size_validator.py
 │   │           ├── liveness_check.py
@@ -91,40 +108,57 @@ pdf-extractext/
 │   │           └── type_check.py
 │   ├── infrastructure/
 │   │   ├── converters/
-│   │   │   └── docling_md.py
+│   │   │   ├── __init__.py
+│   │   │   └── extract_text.py
 │   │   └── persistence/
+│   │       ├── __init__.py
 │   │       ├── database/
+│   │       │   ├── __init__.py
 │   │       │   └── connection.py
 │   │       └── repositories/
-│   │           └── document_repository.py
+│   │           ├── __init__.py
+│   │           └── mongo_repository.py
 │   └── presentation/
 │       ├── __init__.py
 │       ├── middleware/
+│       │   ├── __init__.py
 │       │   └── check_middleware.py
 │       ├── routes/
 │       │   ├── __init__.py
+│       │   ├── document_delete.py
+│       │   ├── document_find_by_checksum.py
+│       │   ├── document_save.py
+│       │   ├── document_update.py
 │       │   └── document_upload.py
 │       └── schemas/
 │           ├── __init__.py
-│           └── document_upload.py
+│           └── document.py
 ├── tests/
 │   ├── conftest.py
 │   ├── data/
-│   │   └── test_document_repository.py
-│   ├── domain/
-│   │   ├── mock_pdf.py
-│   │   ├── test_convert.py
-│   │   ├── test_encryptation_check.py
-│   │   ├── test_file_signature_validator.py
-│   │   ├── test_file_size_validator.py
-│   │   ├── test_liveness_check.py
-│   │   └── test_trailer_check.py
-│   └── presentation/
-│       └── test_routes.py
-├── pyproject.toml
-├── .python-version
+│   │   ├── __init__.py
+│   │   ├── mock_repository.py
+│   │   ├── test_delete.py
+│   │   ├── test_find_by_checksum.py
+│   │   ├── test_save.py
+│   │   └── test_update.py
+│   └── domain/
+│       ├── __init__.py
+│       ├── mock_pdf.py
+│       ├── test_checksum.py
+│       ├── test_convert.py
+│       ├── test_encryptation_check.py
+│       ├── test_file_only_has_imagen.py
+│       ├── test_file_signature_validator.py
+│       ├── test_file_size_validator.py
+│       ├── test_liveness_check.py
+│       └── test_trailer_check.py
 ├── .gitignore
-└── README.md
+├── .python-version
+├── LICENSE
+├── pyproject.toml
+├── README.md
+└── uv.lock
 ```
 
 ### Layer Descriptions
