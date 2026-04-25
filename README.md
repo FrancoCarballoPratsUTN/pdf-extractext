@@ -4,7 +4,7 @@ A REST API system that extracts text from PDF files and converts the content int
 
 **Developers:** 
 * Franco Carballo Prats - https://github.com/FrancoCarballoPratsUTN
-* Michaux Daiana Macarena - https://github.com/Macamichaux
+* Daiana Macarena Michaux - https://github.com/Macamichaux
 
 ###### Current Status
 This project is currently under development.
