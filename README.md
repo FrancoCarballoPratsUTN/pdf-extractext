@@ -105,6 +105,8 @@ pdf-extractext/
 │   ├── infrastructure/
 │   │   ├── converters/
 │   │   │   └── extract_text.py
+│   │   ├── dependencies/
+│   │   │   └── dependencies.py
 │   │   └── persistence/
 │   │       ├── database/
 │   │       │   └── connection.py
@@ -164,6 +166,7 @@ pdf-extractext/
     - **`verifications/`**: PDF validation checks
 - **`app/infrastructure/`**: External implementations
   - **`converters/`**: PDF to Text converter implementation
+  - **`dependencies/`**: Use case dependencies
   - **`persistence/`**: Database connections and repository implementations
     - **`datebase/`**: Database connection
     - **`repositories/`**: Manages the MongoDB repository
@@ -263,6 +266,30 @@ The API will be available at `http://localhost:8000`
 curl -X POST "http://localhost:8000/upload" \
   -H "Content-Type: multipart/form-data" \
   -F "file=@path/to/document.pdf"
+```
+
+**Update a PDF file:**
+```bash
+curl -X PUT "http://localhost:8000/upload/{id}" \
+  -H "Content-Type: multipart/form-data" \
+  -F "file=@path/to/new_document.pdf"
+```
+
+**Save a PDF file:**
+```bash
+curl -X POST "http://localhost:8000/save" \
+  -H "Content-Type: multipart/form-data" \
+  -F "file=@path/to/document.pdf"
+```
+
+**Save a PDF file:**
+```bash
+curl -X GET "http://localhost:8000/files/{id}"
+```
+
+**Delete a PDF file:**
+```bash
+curl -X DELETE "http://localhost:8000/delete/{id}"
 ```
 
 **Response:**
