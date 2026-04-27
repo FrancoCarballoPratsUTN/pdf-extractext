@@ -23,7 +23,7 @@ def do_validation(document_content: bytes)-> bool:
     if encryptation_check(document_content):
         print("Encryptation check failed.")
         return False
-    if not file_has_imagen(document_content):
+    if file_has_imagen(document_content):
         print("File only has image check failed.")
         return False
     return True
