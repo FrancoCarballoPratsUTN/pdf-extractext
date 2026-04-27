@@ -1,6 +1,7 @@
 from app.domain.exceptions.domain_exceptions import DocumentAlreadyExistsError
 from app.domain.exceptions.domain_exceptions import DocumentNotFoundError
 from pymongo.errors import DuplicateKeyError
+from dataclasses import asdict
 from pymongo import ReturnDocument
 from app.domain.repositories.document_repository import DocumentRepository
 from app.domain.use_cases.to_dto import to_document_dto
@@ -19,7 +20,7 @@ class MongoRepository(DocumentRepository):
             Document: The saved document.
         """
         try:
-            dict_document = document.model_dump()
+            dict_document = asdict(document)
             self.collection.insert_one(dict_document)
             return document
         except DuplicateKeyError:

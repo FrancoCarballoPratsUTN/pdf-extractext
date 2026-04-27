@@ -4,15 +4,15 @@ from fastapi import HTTPException
 from app.domain.use_cases.converter import ProcessDocumentUseCase
 from app.presentation.middleware.check_middleware import check_middleware
 from fastapi import APIRouter, UploadFile, Depends
-from app.presentation.schemas.document import Document
+from app.presentation.schemas.document import Document_Schema
 
 
 router = APIRouter()
 
-@router.post('/upload', response_model=Document)
+@router.post('/upload', response_model=Document_Schema)
 async def upload_file(file_validate: UploadFile = Depends(check_middleware),
                       conversor: ProcessDocumentUseCase = Depends(get_process_document_use_case)  
-                      )-> Document:
+                      )-> Document_Schema:
     """Endpoint to upload a PDF file for text extraction.
     Args:
         file (UploadFile): The PDF file to be uploaded.
