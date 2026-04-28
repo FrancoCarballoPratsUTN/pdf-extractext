@@ -48,14 +48,14 @@ PDF ExtractText is a REST API developed in Python that enables:
 
 ### Main Dependencies
 
-- **fastapi**: Modern and fast web framework
-- **pydantic**: Data validation
-- **pydantic-settings**: Settings management
-- **uvicorn**: ASGI server
-- **python-multipart**: Multipart file handling
-- **pypdf**: PDF processing and text extraction
-- **pymongo**: MongoDB database driver
-- **python-dotenv**: Environment variable loading
+- **fastapi v0.135.3**: Modern and fast web framework
+- **pydantic v2.13.1**: Data validation
+- **pydantic-settings v2.13.1**: Settings management
+- **uvicorn v0.44.0**: ASGI server
+- **python-multipart v0.0.26**: Multipart file handling
+- **pypdf v6.10.1**: PDF processing and text extraction
+- **pymongo 4.17.0**: MongoDB database driver
+- **python-dotenv v1.2.2**: Environment variable loading
 
 ## Project Structure
 
@@ -74,7 +74,7 @@ pdf-extractext/
 │   │   │   └── document.py
 |   │   ├── exceptions/
 │   │   │   └── domain_exceptions.py
-│   │   ├── contract/
+│   │   ├── contracts/
 │   │   │   ├── __init__.py
 │   │   │   └── document_converter.py
 │   │   ├── repositories/
@@ -91,7 +91,6 @@ pdf-extractext/
 │   │       │   ├── save_use_case.py
 │   │       │   ├── update_use_case.py
 │   │       ├── flows/
-│   │       │   ├── pipelines.py
 │   │       │   ├── flow_building.py
 │   │       │   ├── flow_validation.py
 │   │       └── verifications/
@@ -146,7 +145,11 @@ pdf-extractext/
 │   │   ├── test_liveness_check.py
 │   │   └── test_trailer_check.py
 │   └── presentation/
-│       └── conftest.py
+│       ├── test_document_delete.py
+│       ├── test_document_find_by_checksum.py
+│       ├── test_document_save.py
+│       ├── test_document_update.py
+│       ├── test_document_upload.py
 ├── pyproject.toml
 ├── .python-version
 ├── .gitignore
@@ -158,7 +161,7 @@ pdf-extractext/
 - **`app/domain/`**: Core business logic (framework-agnostic)
   - **`entities/`**: Domain entities (Document dataclass)
   - **`exceptions/`**: Define custom errors
-  - **`interfaces/`**: Contracts/ports for external dependencies
+  - **`contracts/`**: Contracts/ports for external dependencies
   - **`repositories/`**: Repository interfaces
   - **`use_cases/`**: Application business rules
     - **`crud/`**: Basic database operations
@@ -197,14 +200,14 @@ pdf-extractext/
 
 ### System Requirements
 
-- **Operating System**: Windows 10 or later, macOS, Linux
+- **Operating System**: Windows 11
 - **Python**: Version 3.14
 - **UV**: Latest version (package manager)
 - **MongoDB**: Required for document persistence (local or remote instance)
 
 ### Python Dependencies
 
-All dependencies are managed via `pyproject.toml` and installed via UV. See the [Technology Stack](#technology-stack) section for more details.
+All dependencies are managed via `pyproject.toml` and installed via UV.
 
 ### Prerequisites
 
@@ -259,41 +262,94 @@ The API will be available at `http://localhost:8000`
 | GET | `/find` | Consult a document |
 | DELETE | `/delete` | Delete a document |
 
+
 ### Example Request
 
-**Uploading a PDF file:**
+**Upload a PDF file:**
+
 ```bash
 curl -X POST "http://localhost:8000/upload" \
   -H "Content-Type: multipart/form-data" \
   -F "file=@path/to/document.pdf"
 ```
 
+**Response**:
+{
+  "file_name": "document.pdf",
+  "checksum": "(code (combination of numbers and letters))",
+  "text": "Text extracted from PDF document...",
+  "date": "YYYY-MM-DDTHH:mm:ss"
+}
+
+
 **Update a PDF file:**
+
 ```bash
-curl -X PUT "http://localhost:8000/upload/{id}" \
-  -H "Content-Type: multipart/form-data" \
-  -F "file=@path/to/new_document.pdf"
+curl -X PUT "http://localhost:8000/update/{checksum}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "file_name": "new_name.pdf",
+    "text": "new content updated"
+  }'
 ```
 
+**Response**
+{
+  "file_name": "new_name.pdf",
+  "text": "new content updated",
+  "checksum": "(code (combination of numbers and letters))",
+  "date": ""YYYY-MM-DDTHH:mm:ss"
+}
+
+
 **Save a PDF file:**
+
 ```bash
 curl -X POST "http://localhost:8000/save" \
-  -H "Content-Type: multipart/form-data" \
-  -F "file=@path/to/document.pdf"
+  -H "Content-Type: application/json" \
+  -d '{
+    "file_name": "document.pdf",
+    "checksum": "{checksum}",
+    "text": "full text extracted from the document",
+    "date": "YYYY-MM-DDTHH:mm:ss"
+  }'
 ```
 
-**Save a PDF file:**
+**Response**
+{
+  "file_name": "document.pdf",
+  "checksum": "(code (combination of numbers and letters))",
+  "text": "Full text extracted from the document",
+  "date": "YYYY-MM-DDTHH:mm:ss"
+}
+
+
+**Find a PDF file:**
+
 ```bash
-curl -X GET "http://localhost:8000/files/{id}"
+curl -X GET "http://localhost:8000/find/{checksum}"
 ```
+**Response**
+{
+  "file_name": "document.pdf",
+  "checksum": "(code (combination of numbers and letters))",
+  "text": "Full text extracted from the document",
+  "date": "YYYY-MM-DDTHH:mm:ss"
+}
+
 
 **Delete a PDF file:**
-```bash
-curl -X DELETE "http://localhost:8000/delete/{id}"
-```
 
-**Response:**
-The API returns the extracted text content as a string.
+```bash
+curl -X DELETE "http://localhost:8000/delete/{checksum}"
+```
+**Response**:
+{
+  "file_name": "document.pdf",
+  "checksum": "(code (combination of numbers and letters))",
+  "text": "full text extracted from the document",
+  "date": "YYYY-MM-DDTHH:mm:ss"
+}
 
 ### Validation Rules
 
@@ -313,30 +369,31 @@ The system performs the following validations on uploaded PDFs:
 
 ## Testing
 
-### Run all tests:
-```bash
-uv run pytest
-```
+1. Open your terminal and navigate to the project folder.
 
-### Run with coverage:
-```bash
-uv run pytest --cov=app --cov-report=html
-```
+2. Run all tests:
+  ```bash
+  uv run pytest
+  ```
+3. Run with coverage:
+  ```bash
+  uv run pytest --cov=app --cov-report=html
+  ```
 
-### Run specific test file:
-```bash
-uv run pytest tests/domain/test_convert.py
-```
+4. Run specific test file:
+  ```bash
+  uv run pytest tests/domain/test_convert.py
+  ```
 
-### Linting:
-```bash
-uv run ruff check .
-```
+5. Linting:
+  ```bash
+  uv run ruff check .
+  ```
 
-### Type checking:
-```bash
-uv run mypy app
-```
+6. Type checking:
+  ```bash
+  uv run mypy app
+  ```
 
 ## Methodology
 
