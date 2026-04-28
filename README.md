@@ -274,13 +274,14 @@ curl -X POST "http://localhost:8000/upload" \
 ```
 
 **Response**:
+```
 {
   "file_name": "document.pdf",
   "checksum": "(code (combination of numbers and letters))",
   "text": "Text extracted from PDF document...",
   "date": "YYYY-MM-DDTHH:mm:ss"
 }
-
+```
 
 **Update a PDF file:**
 
@@ -294,13 +295,14 @@ curl -X PUT "http://localhost:8000/update/{checksum}" \
 ```
 
 **Response**
+```
 {
   "file_name": "new_name.pdf",
   "text": "new content updated",
   "checksum": "(code (combination of numbers and letters))",
   "date": ""YYYY-MM-DDTHH:mm:ss"
 }
-
+```
 
 **Save a PDF file:**
 
@@ -316,13 +318,14 @@ curl -X POST "http://localhost:8000/save" \
 ```
 
 **Response**
+```
 {
   "file_name": "document.pdf",
   "checksum": "(code (combination of numbers and letters))",
   "text": "Full text extracted from the document",
   "date": "YYYY-MM-DDTHH:mm:ss"
 }
-
+```
 
 **Find a PDF file:**
 
@@ -330,13 +333,14 @@ curl -X POST "http://localhost:8000/save" \
 curl -X GET "http://localhost:8000/find/{checksum}"
 ```
 **Response**
+```
 {
   "file_name": "document.pdf",
   "checksum": "(code (combination of numbers and letters))",
   "text": "Full text extracted from the document",
   "date": "YYYY-MM-DDTHH:mm:ss"
 }
-
+```
 
 **Delete a PDF file:**
 
@@ -344,13 +348,14 @@ curl -X GET "http://localhost:8000/find/{checksum}"
 curl -X DELETE "http://localhost:8000/delete/{checksum}"
 ```
 **Response**:
+```
 {
   "file_name": "document.pdf",
   "checksum": "(code (combination of numbers and letters))",
   "text": "full text extracted from the document",
   "date": "YYYY-MM-DDTHH:mm:ss"
 }
-
+```
 ### Validation Rules
 
 - **File type**: Must be `application/pdf`
