@@ -15,6 +15,6 @@ def test_create_duplicate_document(mock_document):
     mock_repo = get_mock_repository()
     mock_repo.save(mock_document)
 
-    with pytest.raises(DocumentAlreadyExistsError) as excinfo:
+    with pytest.raises(DocumentAlreadyExistsError):
         mock_repo.save(mock_document)
     
