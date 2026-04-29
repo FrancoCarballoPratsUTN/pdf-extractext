@@ -1,14 +1,14 @@
 from app.domain.use_cases.converter import ProcessDocumentUseCase
 from app.domain.use_cases.crud.delete_use_case import DeleteDocumentUseCase
 from app.infrastructure.persistence.repositories.mongo_repository import MongoRepository
-from app.infrastructure.persistence.database.connection import MongoDBConnection
+from app.infrastructure.persistence.database.connection import mongo_connection
 from app.domain.use_cases.crud.find_use_case import FindDocumentUseCase
 from app.domain.use_cases.crud.save_use_case import SaveDocumentUseCase
 from app.domain.use_cases.crud.update_use_case import UpdateDocumentUseCase
 
 
 def repository():
-    collection = MongoDBConnection().collection
+    collection = mongo_connection.collection
     return MongoRepository(collection)
 
 def get_find_document_use_case():
