@@ -1,9 +1,6 @@
 from pypdf import PdfReader
 import io
 
-import io
-from pypdf import PdfReader
-
 def file_has_imagen(pdf_content: bytes) -> bool:
     """
     Checks if the PDF is an image
