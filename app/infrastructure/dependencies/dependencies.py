@@ -1,5 +1,3 @@
-from fastapi import Depends
-
 from app.domain.use_cases.converter import ProcessDocumentUseCase
 from app.domain.use_cases.crud.delete_use_case import DeleteDocumentUseCase
 from app.infrastructure.persistence.repositories.mongo_repository import MongoRepository
