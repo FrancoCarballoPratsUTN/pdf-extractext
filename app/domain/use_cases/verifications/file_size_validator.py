@@ -1,5 +1,7 @@
-MAX_FILE_SIZE_BYTES = 15728640 
-MIN_FILE_SIZE_BYTES = 0
+from app.config.settings import settings
+
+MAX_FILE_SIZE_BYTES = settings.max_bytes 
+MIN_FILE_SIZE_BYTES = settings.min_bytes 
 
 def validate_file_size(file_size: float) -> bool:
     """

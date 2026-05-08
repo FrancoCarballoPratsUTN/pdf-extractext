@@ -22,4 +22,5 @@ class ProcessDocumentUseCase:
 
         text = self.converter.convert(file_content)
         text_encode = text.encode('utf-8')
+        
         return flow_building(text_encode, filename)

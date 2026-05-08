@@ -1,5 +1,5 @@
 
-from app.domain.interfaces.document_converter import Converter
+from app.domain.contracts.document_converter import Converter
 from pypdf import PdfReader
 from io import BytesIO
 

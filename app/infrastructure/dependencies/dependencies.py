@@ -7,27 +7,27 @@ from app.domain.use_cases.crud.save_use_case import SaveDocumentUseCase
 from app.domain.use_cases.crud.update_use_case import UpdateDocumentUseCase
 
 
-def repository():
+def repository() -> MongoRepository:
     collection = mongo_connection.collection
     return MongoRepository(collection)
 
-def get_find_document_use_case():
+def get_find_document_use_case() -> FindDocumentUseCase:
     """Factory function to create an instance of FindDocumentUseCase."""
 
     return FindDocumentUseCase(repository())
 
-def get_save_document_use_case():
+def get_save_document_use_case() -> SaveDocumentUseCase:
     """Factory function to create an instance of SaveDocumentUseCase."""
     return SaveDocumentUseCase(repository())
 
-def get_update_document_use_case():
+def get_update_document_use_case() -> UpdateDocumentUseCase:
     """Factory function to create an instance of UpdateDocumentUseCase."""
     return UpdateDocumentUseCase(repository())
 
-def get_delete_document_use_case():
+def get_delete_document_use_case() -> DeleteDocumentUseCase:
     """Factory function to create an instance of DeleteDocumentUseCase."""
     return DeleteDocumentUseCase(repository())
 
-def get_process_document_use_case():
+def get_process_document_use_case()-> ProcessDocumentUseCase:
     """Factory function to create an instance of ProcessDocumentUseCase."""
     return ProcessDocumentUseCase()
