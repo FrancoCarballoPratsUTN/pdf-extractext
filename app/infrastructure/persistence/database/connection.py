@@ -34,10 +34,10 @@ class MongoDBConnection:
         self._db["file"].create_index("checksum", unique=True)
 
     @property
-    def collection(self):
+    def get_db(self):
         if self._db is None:
             self.connect()
-        return self._db["file"]
+        return self._db
 
     def close(self):
         """Closes the MongoDB connection."""

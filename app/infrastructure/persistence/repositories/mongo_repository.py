@@ -1,16 +1,17 @@
+from app.config.settings import settings
 from app.domain.exceptions.domain_exceptions import DocumentAlreadyExistsError
 from app.domain.exceptions.domain_exceptions import DocumentNotFoundError
 from pymongo.errors import DuplicateKeyError
 from dataclasses import asdict
 from pymongo import ReturnDocument
 from app.domain.repositories.document_repository import DocumentRepository
-from app.domain.use_cases.to_dto import to_document_dto
+from app.domain.mappers.to_dto import to_document_dto
 from app.domain.entities.document import Document
 
 class MongoRepository(DocumentRepository):
     """MongoDB implementation of the DocumentRepository interface."""
-    def __init__(self, collection):
-        self.collection = collection
+    def __init__(self, db):
+        self.collection = db[settings.mongo_collection_file]
 
     def save(self, document: Document)-> Document:
         """Saves a document to the MongoDB collection.

@@ -1,3 +1,4 @@
+from app.presentation.schemas.exception_response import ProblemDetailsSchema
 from app.domain.exceptions.domain_exceptions import DocumentNotFoundError
 from app.infrastructure.dependencies.dependencies import get_delete_document_use_case
 from fastapi import Depends
@@ -9,8 +10,8 @@ router = APIRouter()
     response_model=dict,
     status_code=200,
     responses={
-        404: {"description": "Document not found"},
-        500: {"description": "Internal server error during deletion"}
+        404: {"model": ProblemDetailsSchema, "description": "Document not found"},
+        500: {"model": ProblemDetailsSchema, "description": "Internal server error during deletion"}
     })
 async def delete_document(checksum: str, use_case: DeleteDocumentUseCase = Depends(get_delete_document_use_case)) -> dict:
     """
