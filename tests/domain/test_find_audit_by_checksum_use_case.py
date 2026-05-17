@@ -1,4 +1,4 @@
-from app.domain.entities.audit_log import Audit_Log
+from app.domain.entities.audit_log import AuditLog
 from app.domain.use_cases.audit.find_audit_by_checksum_use_case import FindAuditLogsByChecksumUseCase
 
 
@@ -6,7 +6,7 @@ class MockAuditRepository:
     """
     A mock implementation of the Audit_LogRepository for testing purposes.
     It allows us to simulate the behavior of the repository without needing a real database.
-        - return_value: A list of Audit_Log objects to return when find_by_checksum is called.
+        - return_value: A list of AuditLog objects to return when find_by_checksum is called.
         - captured_checksum: Captures the 'checksum' parameter passed to find_by_checksum for verification.
     """
     def __init__(self, return_value=None):
@@ -19,8 +19,8 @@ class MockAuditRepository:
 
 def test_find_by_checksum_returns_matching_logs():
     expected = [
-        Audit_Log(action="save", entity_type="Document", checksum="abc123"),
-        Audit_Log(action="update", entity_type="Document", checksum="abc123"),
+        AuditLog(action="save", entity_type="Document", checksum="abc123"),
+        AuditLog(action="update", entity_type="Document", checksum="abc123"),
     ]
     
     repo = MockAuditRepository(return_value=expected)

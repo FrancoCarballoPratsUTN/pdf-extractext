@@ -1,4 +1,4 @@
-from app.domain.entities.audit_log import Audit_Log
+from app.domain.entities.audit_log import AuditLog
 from app.domain.use_cases.audit.find_audit_use_case import FindAuditLogsUseCase
 
 
@@ -6,7 +6,7 @@ class MockAuditRepository:
     """
     A mock implementation of the Audit_LogRepository for testing purposes.
     It allows us to simulate the behavior of the repository without needing a real database.
-     - data_pool: A list of Audit_Log objects to return when find_all is called.
+     - data_pool: A list of AuditLog objects to return when find_all is called.
      - captured_skip: Captures the 'skip' parameter passed to find_all for verification.
      - captured_limit: Captures the 'limit' parameter passed to find_all for verification.
     """
@@ -25,8 +25,8 @@ class MockAuditRepository:
 
 def test_find_audit_logs_execute_returns_list():
     expected_logs = [
-        Audit_Log(action="save", entity_type="Document", checksum="abc"),
-        Audit_Log(action="delete", entity_type="Document", checksum="def"),
+        AuditLog(action="save", entity_type="Document", checksum="abc"),
+        AuditLog(action="delete", entity_type="Document", checksum="def"),
     ]
     repo = MockAuditRepository(data_pool=expected_logs)
     use_case = FindAuditLogsUseCase(repo)
@@ -39,7 +39,7 @@ def test_find_audit_logs_execute_returns_list():
 
 def test_find_audit_logs_with_pagination():
     all_logs = [
-        Audit_Log(action="save", entity_type="Document", checksum=f"checksum{i}")
+        AuditLog(action="save", entity_type="Document", checksum=f"checksum{i}")
         for i in range(20)
     ]
     repo = MockAuditRepository(data_pool=all_logs)

@@ -1,7 +1,7 @@
 import pytest
 import mongomock
 from datetime import datetime
-from app.domain.entities.audit_log import Audit_Log
+from app.domain.entities.audit_log import AuditLog
 from app.domain.exceptions.domain_exceptions import DocumentNotFoundError
 from app.infrastructure.persistence.repositories.mongo_audit_repository import MongoAuditLogRepository
 
@@ -22,7 +22,7 @@ def audit_repo():
 
 
 def test_save_audit_log(audit_repo):
-    log = Audit_Log(
+    log = AuditLog(
         action="save",
         entity_type="Document",
         checksum="abc123",
@@ -39,9 +39,9 @@ def test_save_audit_log(audit_repo):
 
 def test_find_all_returns_all_logs(audit_repo):
     logs = [
-        Audit_Log(action="save", entity_type="Document", checksum="cs1"),
-        Audit_Log(action="delete", entity_type="Document", checksum="cs2"),
-        Audit_Log(action="update", entity_type="Document", checksum="cs3"),
+        AuditLog(action="save", entity_type="Document", checksum="cs1"),
+        AuditLog(action="delete", entity_type="Document", checksum="cs2"),
+        AuditLog(action="update", entity_type="Document", checksum="cs3"),
     ]
     for log in logs:
         audit_repo.save(log)
@@ -57,7 +57,7 @@ def test_find_all_returns_all_logs(audit_repo):
 def test_find_all_with_pagination(audit_repo):
     for i in range(10):
         audit_repo.save(
-            Audit_Log(action="save", entity_type="Document", checksum=f"cs{i}")
+            AuditLog(action="save", entity_type="Document", checksum=f"cs{i}")
         )
 
     result = audit_repo.find_all(skip=3, limit=4)
@@ -68,9 +68,9 @@ def test_find_all_with_pagination(audit_repo):
 
 
 def test_find_by_checksum_returns_matching_logs(audit_repo):
-    audit_repo.save(Audit_Log(action="save", entity_type="Document", checksum="target"))
-    audit_repo.save(Audit_Log(action="delete", entity_type="Document", checksum="other"))
-    audit_repo.save(Audit_Log(action="update", entity_type="Document", checksum="target"))
+    audit_repo.save(AuditLog(action="save", entity_type="Document", checksum="target"))
+    audit_repo.save(AuditLog(action="delete", entity_type="Document", checksum="other"))
+    audit_repo.save(AuditLog(action="update", entity_type="Document", checksum="target"))
 
     result = audit_repo.find_by_checksum("target")
 
@@ -86,8 +86,8 @@ def test_find_by_checksum_raises_error_when_not_found(audit_repo):
 
 
 def test_save_assigns_unique_ids(audit_repo):
-    log1 = Audit_Log(action="save", entity_type="Document", checksum="cs1")
-    log2 = Audit_Log(action="save", entity_type="Document", checksum="cs2")
+    log1 = AuditLog(action="save", entity_type="Document", checksum="cs1")
+    log2 = AuditLog(action="save", entity_type="Document", checksum="cs2")
 
     saved1 = audit_repo.save(log1)
     saved2 = audit_repo.save(log2)

@@ -1,5 +1,5 @@
 import pytest
-from app.domain.entities.audit_log import Audit_Log
+from app.domain.entities.audit_log import AuditLog
 from app.domain.use_cases.audit.audit_decorator import AuditDecorator
 
 
@@ -34,7 +34,7 @@ class MockAuditRepository:
     def __init__(self):
         self.saved_logs = []
 
-    def save(self, audit_log: Audit_Log) -> Audit_Log:
+    def save(self, audit_log: AuditLog) -> AuditLog:
         self.saved_logs.append(audit_log)
         return audit_log
 

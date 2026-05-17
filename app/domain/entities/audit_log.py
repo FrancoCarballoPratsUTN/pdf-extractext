@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 
 @dataclass
-class Audit_Log:
+class AuditLog:
     action: str
     entity_type: str
     checksum: str
