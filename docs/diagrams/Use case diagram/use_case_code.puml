@@ -1,0 +1,66 @@
+@startuml
+skinparam BackgroundColor #FEFEFE
+skinparam DefaultFontName Helvetica
+skinparam DefaultFontSize 12
+skinparam PackageBorderColor #2E86C1
+skinparam PackageBackgroundColor #F0F8FF
+skinparam PackageFontSize 16
+skinparam PackageFontStyle bold
+skinparam ActorBorderColor #2E86C1
+skinparam UseCaseBorderColor #2E86C1
+skinparam UseCaseBackgroundColor #EAF2F8
+skinparam ArrowColor #34495E
+skinparam ArrowFontSize 11
+skinparam NoteBackgroundColor #FEF9E7
+skinparam NoteBorderColor #F1C40F
+
+title **Diagrama de Casos de Uso - pdf-extractext**
+
+rectangle "pdf-extractext\nAPI REST" as SYSTEM {
+  usecase "UploadDocumentUseCase" as UC01
+  usecase "SaveDocumentUseCase" as UC02
+  usecase "FindDocumentoUseCase" as UC03
+  usecase "UpdateDocumentUseCase" as UC04
+  usecase "DeleteDocumentUseCase" as UC05
+  usecase "FindAuditLogByChecksumUseCase" as UC06
+  usecase "FindAuditLogUseCae" as UC07
+
+  usecase "Validate PDF" as UC08
+  usecase "Extract Text" as UC09
+  usecase "Register Audit" as UC10
+}
+
+actor Cliente as USER
+
+USER --> UC01
+USER --> UC02
+USER --> UC03
+USER --> UC04
+USER --> UC05
+USER --> UC06
+USER --> UC07
+
+UC01 --> UC08 : <<include>>
+UC01 --> UC09 : <<include>>
+UC01 --> UC10 : <<include>>
+UC02 --> UC10 : <<include>>
+UC04 --> UC10 : <<include>>
+UC05 --> UC10 : <<include>>
+
+note top of UC06
+  Pagination with
+  skip / limit
+end note
+
+note bottom of UC08
+  Validations:
+  · Signature %PDF-
+  · Size
+  · MIME type
+  · Encryption
+  · Liveness
+  · Trailer %%EOF
+  · Image only
+end note
+
+@enduml

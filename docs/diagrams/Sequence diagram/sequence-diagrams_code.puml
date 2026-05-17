@@ -1,0 +1,373 @@
+' ============================================================
+' DIAGRAMA 1: POST /upload — Carga y procesamiento de PDF
+' ============================================================
+
+@startuml
+skinparam sequence {
+    ArrowColor #4A4A4A
+    ActorBorderColor #2E86C1
+    ParticipantBorderColor #2E86C1
+    LifeLineBackgroundColor #EAF2F8
+    LifeLineBorderColor #2E86C1
+}
+
+title ** POST /upload — Carga y Procesamiento de PDF **
+
+actor "Cliente" as C
+participant "Middleware\ncheck_middleware" as MW
+participant "Router\nupload_file" as R
+participant "UseCase\nProcessDocumentUseCase" as UC
+participant "Domain\nflow_validation" as FV
+participant "Infrastructure\nExtractText" as EXT
+participant "Domain\nflow_building" as FB
+participant "Entity\nDocument" as ENT
+participant "AuditLogger" as AUD1
+
+== Validación Pre-Route (Middleware) ==
+
+C -> MW ++ : POST /upload\n(file: UploadFile)
+
+MW -> MW : file.content_type
+MW -> MW : file.size
+
+MW -> MW : type_check(file_type)
+note right: ¿MIME = "application/pdf"?
+
+alt type_check() == False
+    MW --> C -- : HTTP 400\n"Invalid File"
+end
+
+MW -> MW : validate_file_size(file_size)
+note right: ¿min < size < max?
+
+alt validate_file_size() == False
+    MW --> C -- : HTTP 400\n"file size out of limits"
+end
+
+MW --> R -- : UploadFile validado
+
+== Procesamiento en Router ==
+
+R -> R : file_content =\nawait file_validate.read()
+activate R
+
+R -> UC ++ : execute(file_content, filename)
+
+== Validación de Dominio (Pipeline) ==
+
+UC -> FV ++ : do_validation(file_content)
+
+FV -> FV : validate_pdf_signature()
+note right: ¿Empieza con %PDF-?
+
+FV -> FV : liveness_check()
+note right: ¿Se puede abrir\ncon PdfReader?
+
+FV -> FV : trailer_check()
+note right: ¿Contiene %%EOF\nen últimos 100 bytes?
+
+FV -> FV : encryptation_check()
+note right: ¿No está encriptado?
+
+FV -> FV : file_has_imagen()
+note right: ¿Tiene texto\nextraíble?
+
+alt Alguna validación falla
+    FV --> UC -- : False
+    UC --> R -- : raise DocumentValidationError
+    R --> C -- : HTTP 422\n"Invalid or corrupted PDF"
+    deactivate R
+    note left: Fin del flujo
+end
+
+FV --> UC -- : True
+
+== Conversión del PDF ==
+
+UC -> EXT ++ : convert(file_content)
+note right: PdfReader →\nextract_text()
+EXT --> UC -- : text (str)
+
+== Construcción del Documento ==
+
+UC -> UC : text.encode('utf-8')
+
+UC -> FB ++ : flow_building(text_bytes, filename)
+
+FB -> FB : generate_checksum(text_bytes)
+note right: hashlib.sha256()
+
+FB -> FB : datetime.utcnow()
+
+FB -> ENT ++ : Document(\n  checksum,\n  file_name,\n  text,\n  date\n)
+ENT --> FB -- : Document entity
+
+FB --> UC -- : Document
+
+== Respuesta al Cliente ==
+
+UC --> R -- : Document
+
+== Auditoría ==
+
+R -> AUD1 ++ : log_audit("upload",\n  document.checksum, filename)
+note right #FEF9E7: Auditoría: registro\nde carga exitosa\nde PDF
+AUD1 --> R -- : ok
+
+== Respuesta al Cliente ==
+
+R --> C -- : 201 Created\nDocument_Schema
+
+deactivate R
+@enduml
+
+
+
+' ============================================================
+' DIAGRAMA 2: POST /save — Guardar Documento
+' ============================================================
+
+@startuml
+skinparam sequence {
+    ArrowColor #4A4A4A
+    ActorBorderColor #2E86C1
+    ParticipantBorderColor #2E86C1
+    LifeLineBackgroundColor #EAF2F8
+    LifeLineBorderColor #2E86C1
+}
+
+title ** POST /save — Persistir Documento en MongoDB **
+
+actor "Cliente" as C2
+participant "Router\nsave_document" as R2
+participant "UseCase\nSaveDocumentUseCase" as UC2
+participant "Repository\nMongoRepository" as REPO2
+participant "MongoDB" as DB2
+participant "AuditLogger" as AUD2
+
+== Recepción y Validación del Schema ==
+
+C2 -> R2 ++ : POST /save\nDocument_Schema (JSON body)
+
+R2 -> R2 : Document(**document.model_dump())
+note right: Convierte Schema →\nEntity (dataclass)
+
+== Delegación al Use Case ==
+
+R2 -> UC2 ++ : execute(Document)
+
+== Persistencia en MongoDB ==
+
+UC2 -> REPO2 ++ : save(document)
+
+REPO2 -> REPO2 : asdict(document)
+
+REPO2 -> DB2 : insert_one(dict_document)
+
+alt DuplicateKeyError
+    DB2 --> REPO2 : DuplicateKeyError
+    REPO2 --> UC2 -- : raise\nDocumentAlreadyExistsError
+    UC2 --> R2 -- : HTTP 409 Conflict
+    R2 --> C2 -- : "Document already exists"
+    deactivate R2
+end
+
+DB2 --> REPO2 : ok
+REPO2 --> UC2 -- : Document (entity)
+
+UC2 --> R2 -- : Document
+
+== Auditoría ==
+
+R2 -> AUD2 ++ : log_audit("save",\n  document.checksum, "success")
+note right #FEF9E7: Auditoría: registro\nde persistencia exitosa
+AUD2 --> R2 -- : ok
+
+R2 --> C2 -- : 201 Created\nDocument_Schema
+
+deactivate R2
+@enduml
+
+
+
+' ============================================================
+' DIAGRAMA 3: GET /find/{checksum} — Buscar Documento
+' ============================================================
+
+@startuml
+skinparam sequence {
+    ArrowColor #4A4A4A
+    ActorBorderColor #2E86C1
+    ParticipantBorderColor #2E86C1
+    LifeLineBackgroundColor #EAF2F8
+    LifeLineBorderColor #2E86C1
+}
+
+title ** GET /find/{checksum} — Búsqueda por Checksum **
+
+actor "Cliente" as C3
+participant "Router\nfind_document_by_checksum" as R3
+participant "UseCase\nFindDocumentUseCase" as UC3
+participant "Repository\nMongoRepository" as REPO3
+participant "MongoDB" as DB3
+participant "AuditLogger" as AUD3
+
+== Consulta ==
+
+C3 -> R3 ++ : GET /find/{checksum}
+note right: checksum = SHA-256
+
+R3 -> UC3 ++ : execute(checksum)
+
+UC3 -> REPO3 ++ : find_by_checksum(checksum)
+
+REPO3 -> DB3 : find_one({"checksum": checksum})
+
+alt Documento no encontrado
+    DB3 --> REPO3 : None
+    REPO3 --> UC3 -- : raise\nDocumentNotFoundError
+    UC3 --> R3 -- : HTTP 404 Not Found
+    R3 --> C3 -- : "Document not found"
+    deactivate R3
+end
+
+DB3 --> REPO3 : document (dict)
+
+REPO3 -> REPO3 : to_document_dto(document)
+note right: Convierte dict →\nDocument_Schema (Pydantic)
+
+REPO3 --> UC3 -- : Document_Schema
+
+UC3 --> R3 -- : Document_Schema
+
+== Auditoría ==
+
+R3 -> AUD3 ++ : log_audit("find",\n  checksum, "success")
+note right #FEF9E7: Auditoría: registro\nde consulta exitosa
+AUD3 --> R3 -- : ok
+
+R3 --> C3 -- : 200 OK\nDocument_Schema
+
+deactivate R3
+@enduml
+
+
+
+' ============================================================
+' DIAGRAMA 4: PUT /update/{checksum} — Actualizar Documento
+' ============================================================
+
+@startuml
+skinparam sequence {
+    ArrowColor #4A4A4A
+    ActorBorderColor #2E86C1
+    ParticipantBorderColor #2E86C1
+    LifeLineBackgroundColor #EAF2F8
+    LifeLineBorderColor #2E86C1
+}
+
+title ** PUT /update/{checksum} — Actualización de Documento **
+
+actor "Cliente" as C4
+participant "Router\nupdate_document" as R4
+participant "UseCase\nUpdateDocumentUseCase" as UC4
+participant "Repository\nMongoRepository" as REPO4
+participant "MongoDB" as DB4
+participant "AuditLogger" as AUD4
+
+== Solicitud de Actualización ==
+
+C4 -> R4 ++ : PUT /update/{checksum}\n+ new_data (dict body)
+
+R4 -> UC4 ++ : execute(checksum, new_data)
+
+UC4 -> REPO4 ++ : update(checksum, new_data)
+
+REPO4 -> DB4 : find_one_and_update(\n  {"checksum": checksum},\n  {"$set": new_data}\n)
+
+alt Documento no encontrado
+    DB4 --> REPO4 : None
+    REPO4 --> UC4 -- : raise\nDocumentNotFoundError
+    UC4 --> R4 -- : HTTP 404 Not Found
+    R4 --> C4 -- : "Document not found"
+    deactivate R4
+end
+
+DB4 --> REPO4 : updated_document (dict)
+
+REPO4 -> REPO4 : to_document_dto(updated_document)
+note right: Convierte dict →\nDocument_Schema
+
+REPO4 --> UC4 -- : Document_Schema
+
+UC4 --> R4 -- : Document_Schema
+
+== Auditoría ==
+
+R4 -> AUD4 ++ : log_audit("update",\n  checksum, "success")
+note right #FEF9E7: Auditoría: registro\nde actualización exitosa
+AUD4 --> R4 -- : ok
+
+R4 --> C4 -- : 200 OK\nDocument_Schema
+
+deactivate R4
+@enduml
+
+
+
+' ============================================================
+' DIAGRAMA 5: DELETE /delete/{checksum} — Eliminar Documento
+' ============================================================
+
+@startuml
+skinparam sequence {
+    ArrowColor #4A4A4A
+    ActorBorderColor #2E86C1
+    ParticipantBorderColor #2E86C1
+    LifeLineBackgroundColor #EAF2F8
+    LifeLineBorderColor #2E86C1
+}
+
+title ** DELETE /delete/{checksum} — Eliminación de Documento **
+
+actor "Cliente" as C5
+participant "Router\ndelete_document" as R5
+participant "UseCase\nDeleteDocumentUseCase" as UC5
+participant "Repository\nMongoRepository" as REPO5
+participant "MongoDB" as DB5
+participant "AuditLogger" as AUD5
+
+== Solicitud de Eliminación ==
+
+C5 -> R5 ++ : DELETE /delete/{checksum}
+
+R5 -> UC5 ++ : execute(checksum)
+
+UC5 -> REPO5 ++ : delete(checksum)
+
+REPO5 -> DB5 : delete_one({"checksum": checksum})
+
+alt Documento no encontrado
+    DB5 --> REPO5 : deleted_count = 0
+    REPO5 --> UC5 -- : raise\nDocumentNotFoundError
+    UC5 --> R5 -- : HTTP 404 Not Found
+    R5 --> C5 -- : "Document not found"
+    deactivate R5
+end
+
+DB5 --> REPO5 : deleted_count = 1
+
+REPO5 --> UC5 -- : {"message":\n  "Document deleted successfully."}
+
+UC5 --> R5 -- : dict
+
+== Auditoría ==
+
+R5 -> AUD5 ++ : log_audit("delete",\n  checksum, "success")
+note right #FEF9E7: Auditoría: registro\nde eliminación exitosa
+AUD5 --> R5 -- : ok
+
+R5 --> C5 -- : 200 OK\n{"message": "Deleted"}
+
+deactivate R5
+@enduml

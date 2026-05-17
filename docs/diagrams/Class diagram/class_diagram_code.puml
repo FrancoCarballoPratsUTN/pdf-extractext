@@ -1,0 +1,88 @@
+@startuml
+skinparam BackgroundColor #FEFEFE
+skinparam DefaultFontName Helvetica
+skinparam DefaultFontSize 12
+skinparam PackageBorderColor #2E86C1
+skinparam PackageBackgroundColor #F0F8FF
+skinparam PackageFontSize 14
+skinparam PackageFontStyle bold
+skinparam InterfaceBorderColor #1ABC9C
+skinparam InterfaceFontStyle italic
+skinparam EntityBorderColor #2E86C1
+skinparam ClassBorderColor #2E86C1
+skinparam ArrowColor #34495E
+skinparam NoteBackgroundColor #FEF9E7
+skinparam NoteBorderColor #F1C40F
+skinparam NoteFontSize 11
+
+title **Diagrama de Clases — Entorno de Document**
+
+package "app.domain" as DOMAIN {
+  entity Document {
+    + file_name: str
+    + checksum: str
+    + text: str
+    + date: datetime
+  }
+
+  entity AuditLog {
+    + action: str
+    + entity_type: str
+    + checksum: str
+    + details: dict | None
+    + performed_at: datetime
+    + id: str | None
+  }
+
+  interface DocumentRepository {
+    + save(document)
+    + find_by_checksum(document_checksum)
+    + update(document_checksum, new_data)
+    + delete(document_checksum)
+  }
+
+  interface Audit_LogRepository {
+    + save(audit_log: AuditLog): AuditLog
+    + find_all(skip: int, limit: int): list[AuditLog]
+    + find_by_checksum(checksum: str): list[AuditLog]
+  }
+
+  interface Converter {
+    + convert(file_content: bytes): bytes
+  }
+}
+
+package "app.infrastructure" as INFRA {
+  class MongoRepository {
+    - collection
+    + save(document)
+    + find_by_checksum(document_checksum)
+    + update(document_checksum, new_data)
+    + delete(document_checksum)
+  }
+
+  class MongoAuditLogRepository {
+    - _collection
+    + save(audit_log): AuditLog
+    + find_all(skip, limit): list[AuditLog]
+    + find_by_checksum(checksum): list[AuditLog]
+  }
+
+  class ExtractText {
+    + convert(file_content): str
+  }
+}
+
+note right of DocumentRepository
+  **Principio de Inversión de Dependencias**
+  El dominio define el contrato,
+  la infraestructura lo implementa.
+end note
+
+MongoRepository ..|> DocumentRepository : implements
+MongoAuditLogRepository ..|> Audit_LogRepository : implements
+ExtractText ..|> Converter : implements
+
+Document --> AuditLog : "1 → *\naudited by checksum"
+
+@enduml
