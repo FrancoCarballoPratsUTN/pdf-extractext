@@ -22,7 +22,7 @@ class MongoDBConnection:
                     authSource="admin",
                     serverSelectionTimeoutMS=5000 
                 )
-                self._db = self._client['pdf_extractext']
+                self._db = self._client[settings.mongo_client]
                 self._ensure_indexes()
                 
             except ConnectionFailure as e:
