@@ -1,4 +1,4 @@
-from pydantic import ConfigDict
+from pydantic import ConfigDict, Field
 from datetime import datetime
 from pydantic import BaseModel
 
@@ -9,5 +9,5 @@ class AuditLogSchema(BaseModel):
     checksum: str
     details: dict | None = None
     performed_at: datetime
-    id: str | None = None 
-    model_config = ConfigDict(from_attributes=True)
+    id: str | None = Field(None, alias="_id", serialization_alias="_id")
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True)

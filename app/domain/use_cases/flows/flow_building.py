@@ -11,7 +11,7 @@ def flow_building(text: bytes, filename: str) -> Document:
         Document: A Document entity containing the checksum, filename, and creation date.
     """
     checksum = generate_checksum(text)
-    date_now = datetime.now(timezone.utc)()
+    date_now = datetime.now(timezone.utc)
     
     document = Document(
         checksum=checksum,

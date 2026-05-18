@@ -15,12 +15,12 @@ def test_get_audit_logs_success():
             return [
                 AuditLog(
                     action="save", entity_type="Document", checksum="abc",
-                    performed_at=datetime(2024, 1, 1, 12, 0, 0), id="id-1",
+                    performed_at=datetime(2024, 1, 1, 12, 0, 0), _id="_id-1",
                 ),
                 AuditLog(
                     action="delete", entity_type="Document", checksum="def",
                     details={"reason": "test"},
-                    performed_at=datetime(2024, 6, 15, 10, 30, 0), id="id-2",
+                    performed_at=datetime(2024, 6, 15, 10, 30, 0), _id="_id-2",
                 ),
             ]
 
@@ -55,7 +55,7 @@ def test_get_audit_logs_by_checksum_success():
             return [
                 AuditLog(
                     action="save", entity_type="Document", checksum=checksum,
-                    performed_at=datetime(2024, 1, 1, 12, 0, 0), id="id-1",
+                    performed_at=datetime(2024, 1, 1, 12, 0, 0), _id="_id-1",
                 ),
             ]
 
@@ -91,11 +91,11 @@ def test_get_audit_logs_by_checksum_multiple_results():
             return [
                 AuditLog(
                     action="save", entity_type="Document", checksum=checksum,
-                    performed_at=datetime(2024, 1, 1, 12, 0, 0), id="id-1",
+                    performed_at=datetime(2024, 1, 1, 12, 0, 0), _id="_id-1",
                 ),
                 AuditLog(
                     action="update", entity_type="Document", checksum=checksum,
-                    performed_at=datetime(2024, 1, 2, 12, 0, 0), id="id-2",
+                    performed_at=datetime(2024, 1, 2, 12, 0, 0), _id="_id-2",
                 ),
             ]
 
@@ -105,5 +105,5 @@ def test_get_audit_logs_by_checksum_multiple_results():
     assert response.status_code == 200
     data = response.json()
     assert len(data) == 2
-    assert data[0]["id"] == "id-1"
-    assert data[1]["id"] == "id-2"
+    assert data[0]["_id"] == "_id-1"
+    assert data[1]["_id"] == "_id-2"

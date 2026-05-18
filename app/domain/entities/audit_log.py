@@ -9,4 +9,4 @@ class AuditLog:
     checksum: str
     details: dict | None = None
     performed_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
-    id: str | None = None 
+    _id: str | None = None 

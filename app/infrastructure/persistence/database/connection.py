@@ -31,7 +31,7 @@ class MongoDBConnection:
 
     def _ensure_indexes(self):
         """Ensures that the necessary indexes are created on the collection."""
-        self._db["file"].create_index("checksum", unique=True)
+        self._db[settings.mongo_collection_file].create_index("checksum", unique=True)
 
     @property
     def get_db(self):

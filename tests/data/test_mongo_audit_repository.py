@@ -32,7 +32,7 @@ def test_save_audit_log(audit_repo):
 
     saved = audit_repo.save(log)
 
-    assert saved.id is not None
+    assert saved._id is not None
     assert saved.action == "save"
     assert saved.checksum == "abc123"
 
@@ -92,6 +92,6 @@ def test_save_assigns_unique_ids(audit_repo):
     saved1 = audit_repo.save(log1)
     saved2 = audit_repo.save(log2)
 
-    assert saved1.id is not None
-    assert saved2.id is not None
-    assert saved1.id != saved2.id
+    assert saved1._id is not None
+    assert saved2._id is not None
+    assert saved1._id != saved2._id

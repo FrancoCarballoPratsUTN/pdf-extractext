@@ -14,10 +14,16 @@ class MongoAuditLogRepository(Audit_LogRepository):
         Args:
             audit_log (AuditLog): The audit log to save.
         Returns:
-            AuditLog: The saved audit log with an assigned ID.
+            AuditLog: The saved audit log with an assigned _id.
         """
-        result = self._collection.insert_one(audit_log.__dict__)
-        audit_log.id = str(result.inserted_id)
+        data = {"action": audit_log.action,
+                "entity_type": audit_log.entity_type,
+                "checksum": audit_log.checksum,
+                "details": audit_log.details,
+                "performed_at": audit_log.performed_at}
+
+        result = self._collection.insert_one(data)
+        audit_log._id = str(result.inserted_id)
         return audit_log
 
     def find_all(self, skip: int = 0, limit: int = 10) -> list[AuditLog]:
@@ -30,7 +36,9 @@ class MongoAuditLogRepository(Audit_LogRepository):
             list[AuditLog]: A list of audit logs.
         """
         cursor = self._collection.find().skip(skip).limit(limit)
-        return [to_audit_log_dto(doc) for doc in list(cursor)]
+
+        return [to_audit_log_dto({**doc, "_id": str(doc["_id"])}) for doc in cursor]
+
 
     def find_by_checksum(self, checksum: str) -> list[AuditLog]: 
         """
@@ -46,5 +54,5 @@ class MongoAuditLogRepository(Audit_LogRepository):
         if not docs:
             raise DocumentNotFoundError("No audit logs found with the specified checksum.")
         
-        return [to_audit_log_dto(doc) for doc in docs]  
+        return [to_audit_log_dto({**doc, "_id": str(doc["_id"])}) for doc in docs]  
         

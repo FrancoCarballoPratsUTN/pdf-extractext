@@ -26,5 +26,5 @@ def to_audit_log_dto(audit_log: dict) -> AuditLog:
             checksum=audit_log.get("checksum"),
             details=audit_log.get("details"),
             performed_at=audit_log.get("performed_at"),
-            id=audit_log.get("id")
+            _id=audit_log.get("_id")
         )

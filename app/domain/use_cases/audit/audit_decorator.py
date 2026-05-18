@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 from app.domain.mappers.to_dto import to_audit_log_dto
 from app.domain.repositories.audit_log_repository import Audit_LogRepository
 
@@ -29,8 +30,8 @@ class AuditDecorator:
             "entity_type": self._entity_type,
             "checksum": self._checksum,
             "details": None,
-            "performed_at": None,
-            "id": None
+            "performed_at": datetime.now(timezone.utc),
+            "_id": None
         })
 
         self._audit_repo.save(log)
