@@ -1,4 +1,3 @@
-import pytest
 from fastapi.testclient import TestClient
 from app.domain.exceptions.domain_exceptions import DocumentNotFoundError
 from app.main import app

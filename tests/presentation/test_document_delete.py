@@ -1,4 +1,3 @@
-import pytest
 from fastapi.testclient import TestClient
 from app.main import app
 from app.infrastructure.dependencies.dependencies import get_delete_document_use_case
