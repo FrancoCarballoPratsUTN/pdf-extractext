@@ -1,6 +1,7 @@
 from app.config.settings import settings
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure
+from app.config.logging_config import loger
 class MongoDBConnection:
     def __init__(self):
         self._client = None
@@ -24,9 +25,9 @@ class MongoDBConnection:
                 )
                 self._db = self._client[settings.mongo_client]
                 self._ensure_indexes()
-                
+                loger.info("Connected to MongoDB successfully.")
             except ConnectionFailure as e:
-                print(f"Connection failed: {e}")
+                loger.critical(f"Connection failed: {e}", exc_info=True)
                 raise
 
     def _ensure_indexes(self):
@@ -45,5 +46,6 @@ class MongoDBConnection:
             self._client.close()
             self._client = None
             self._db = None
+            loger.info("MongoDB connection closed.")
 
 mongo_connection = MongoDBConnection()

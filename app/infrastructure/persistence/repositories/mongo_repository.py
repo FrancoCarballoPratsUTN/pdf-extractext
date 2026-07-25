@@ -1,13 +1,13 @@
+from dataclasses import asdict
+from pymongo.errors import DuplicateKeyError
+from pymongo import ReturnDocument
 from app.config.settings import settings
 from app.domain.exceptions.domain_exceptions import DocumentAlreadyExistsError
 from app.domain.exceptions.domain_exceptions import DocumentNotFoundError
-from pymongo.errors import DuplicateKeyError
-from dataclasses import asdict
-from pymongo import ReturnDocument
 from app.domain.repositories.document_repository import DocumentRepository
 from app.domain.mappers.to_dto import to_document_dto
 from app.domain.entities.document import Document
-
+from app.config.logging_config import loger
 class MongoRepository(DocumentRepository):
     """MongoDB implementation of the DocumentRepository interface."""
     def __init__(self, db):
@@ -23,9 +23,11 @@ class MongoRepository(DocumentRepository):
         try:
             dict_document = asdict(document)
             self.collection.insert_one(dict_document)
+            loger.debug(f"Document saved successfully: {document.checksum}")
             return document
         except DuplicateKeyError:
             raise DocumentAlreadyExistsError(f"Checksum {document.checksum} already exists.")
+
 
     def find_by_checksum(self, document_checksum: str)-> Document:
         """Finds a document by its checksum.
@@ -39,6 +41,7 @@ class MongoRepository(DocumentRepository):
         if not document:
             raise DocumentNotFoundError("Document not found.")
 
+        loger.debug(f"Document found: {document_checksum}")
         return to_document_dto(document) 
 
     def update(self, document_checksum: str, new_data: dict)-> Document:
@@ -55,6 +58,7 @@ class MongoRepository(DocumentRepository):
         if not updated_data:
             raise DocumentNotFoundError("Document not found.")
 
+        loger.debug(f"Document updated successfully: {document_checksum}")
         return to_document_dto(updated_data)
 
     def delete(self, document_checksum: str)->dict:
@@ -69,4 +73,5 @@ class MongoRepository(DocumentRepository):
         if result.deleted_count == 0:
             raise DocumentNotFoundError(f"Document with checksum {document_checksum} not found.")
 
+        loger.debug(f"Document deleted successfully: {document_checksum}")
         return {"message": "Document deleted successfully."}

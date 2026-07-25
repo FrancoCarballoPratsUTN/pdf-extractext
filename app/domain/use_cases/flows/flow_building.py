@@ -1,6 +1,7 @@
-from app.domain.use_cases.checksum import generate_checksum
 from datetime import datetime, timezone
 from app.domain.entities.document import Document
+from app.domain.use_cases.checksum import generate_checksum
+
 
 def flow_building(text: bytes, filename: str) -> Document:
     """Builds a document flow by creating a Document entity with the provided text and filename.

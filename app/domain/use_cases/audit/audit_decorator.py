@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 from app.domain.mappers.to_dto import to_audit_log_dto
 from app.domain.repositories.audit_log_repository import Audit_LogRepository
-
+from app.config.logging_config import loger
 class AuditDecorator:
     """
     Decorator for use cases to log actions in the audit log.
@@ -20,19 +20,22 @@ class AuditDecorator:
                 **kwargs: Keyword arguments for the use case.
             Returns:
                     The result of the use case execution."""
+        try: 
+            result = self._use_case.execute(*args, **kwargs)
 
-        result = self._use_case.execute(*args, **kwargs)
+            checksum = result.checksum if hasattr(result, 'checksum') else kwargs.get('checksum', '')
+            self._checksum = checksum
+            log = to_audit_log_dto({
+                "action": self._action,
+                "entity_type": self._entity_type,
+                "checksum": self._checksum,
+                "details": None,
+                "performed_at": datetime.now(timezone.utc),
+                "_id": None
+            })
 
-        checksum = result.checksum if hasattr(result, 'checksum') else kwargs.get('checksum', '')
-        self._checksum = checksum
-        log = to_audit_log_dto({
-            "action": self._action,
-            "entity_type": self._entity_type,
-            "checksum": self._checksum,
-            "details": None,
-            "performed_at": datetime.now(timezone.utc),
-            "_id": None
-        })
-
-        self._audit_repo.save(log)
-        return result
+            self._audit_repo.save(log)
+            loger.info("Audit log created", extra={"action": self._action, "entity_type": self._entity_type, "checksum": self._checksum})
+            return result
+        except:
+            loger.critical(f"Error executing use case", exc_info=True)
