@@ -1,8 +1,10 @@
 import logging
 from pythonjsonlogger import jsonlogger
+from app.config.settings import settings
 
 loger = logging.getLogger(__name__)
-loger.setLevel(logging.DEBUG)
+log_level = getattr(logging, settings.log_level, logging.DEBUG)
+loger.setLevel(log_level)
 
 console_handler = logging.StreamHandler()
 file_handler = logging.FileHandler('app.log')

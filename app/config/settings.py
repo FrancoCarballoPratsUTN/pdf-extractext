@@ -20,5 +20,6 @@ class Settings:
         self.audit_delete_action = os.getenv("AUDIT_DELETE_ACTION")
         self.audit_process_action = os.getenv("AUDIT_PROCESS_ACTION")
         self.audit_entity_type = os.getenv("AUDIT_ENTITY_TYPE")
+        self.log_level = os.getenv("LOG_LEVEL", "INFO")
 
 settings = Settings()
