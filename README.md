@@ -61,17 +61,18 @@ PDF ExtractText is a REST API developed in Python that enables:
 - **pypdf v6.10.1**: PDF processing and text extraction
 - **pymongo 4.17.0**: MongoDB database driver
 - **python-dotenv v1.2.2**: Environment variable loading
+- **python-json-logger v4.1.0**: JSON formatting for logs
 
 ### Development Dependencies
 
 - **pytest v9.0.3**: Testing framework
 - **pytest-asyncio v1.3.0**: Async support for pytest
 - **pytest-cov v7.1.0**: Code coverage reports
-- **httpx**: HTTP client for testing
-- **ruff**: Code linting
-- **mypy**: Static type checking
-- **reportlab**: PDF generation for tests
-- **mongomock**: MongoDB mock for testing
+- **httpx v0.27.0**: HTTP client for testing
+- **ruff v0.6.0**: Code linting
+- **mypy v1.11.0**: Static type checking
+- **reportlab v4.4.10**: PDF generation for tests
+- **mongomock v4.3.0**: MongoDB mock for testing
 
 ## Project Structure
 
@@ -82,6 +83,7 @@ pdf-extractext/
 │   ├── main.py
 │   ├── config/
 │   │   ├── __init__.py
+│   │   ├── logging_config.py
 │   │   └── settings.py
 │   ├── domain/
 │   │   ├── __init__.py
@@ -91,6 +93,7 @@ pdf-extractext/
 │   │   │   └── document.py
 │   │   ├── exceptions/
 │   │   │   └── domain_exceptions.py
+│   │   ├── interfaces/
 │   │   ├── contracts/
 │   │   │   ├── __init__.py
 │   │   │   └── document_converter.py
@@ -154,6 +157,21 @@ pdf-extractext/
 │           ├── audit_log_response.py
 │           ├── document.py
 │           └── exception_response.py
+├── docs/
+│   └── diagrams/
+│       ├── class_diagram/
+│       │   ├── class_diagram_code.puml
+│       │   └── document_class.png
+│       ├── sequence_diagram/
+│       │   ├── DS_delete.png
+│       │   ├── DS_find.png
+│       │   ├── DS_save.png
+│       │   ├── DS_update.png
+│       │   ├── DS_upload.png
+│       │   └── sequence-diagrams_code.puml
+│       └── use_case_diagram/
+│           ├── use_case_code.puml
+│           └── use_case.png
 ├── tests/
 │   ├── conftest.py
 │   ├── data/
@@ -183,29 +201,24 @@ pdf-extractext/
 │       ├── test_document_save.py
 │       ├── test_document_update.py
 │       └── test_document_upload.py
-├── docs/
-│   └── diagrams/
-│       ├── class_diagram/
-│       │   ├── class_diagram_code.puml
-│       │   └── document_class.png
-│       ├── sequence_diagram/
-│       │   ├── DS_delete.png
-│       │   ├── DS_find.png
-│       │   ├── DS_save.png
-│       │   ├── DS_update.png
-│       │   ├── DS_upload.png
-│       │   └── sequence-diagrams_code.puml
-│       └── use_case_diagram/
-│           ├── use_case_code.puml
-│           └── use_case.png
+├── .agents/
+│   └── skills/
+│       ├── tdd/
+│       └── clean-code/
+├── .dockerignore
+├── .env
+├── .env.example
+├── .gitignore
+├── .python-version
 ├── compose.yaml
 ├── Dockerfile
-├── .dockerignore
+├── LICENSE
+├── plantuml.jar
 ├── pyproject.toml
-├── .env.example
-├── .python-version
-├── .gitignore
-└── README.md
+├── README.Docker.md
+├── README.md
+├── skills-lock.json
+└── uv.lock
 ```
 
 ### Layer Descriptions
@@ -234,6 +247,7 @@ pdf-extractext/
   - **`schemas/`**: Pydantic schemas for request/response validation
 - **`tests/`**: Test suite by layer (unit + integration)
 - **`docs/`**: Project documentation and UML diagrams (PlantUML + PNG)
+- **`.agents/skills/`**: Agent skill definitions for TDD and Clean Code workflows
 
 ### Architecture (Clean Architecture)
 
@@ -253,6 +267,17 @@ pdf-extractext/
 └────────────────────────────────────────────┘
 ```
 
+### Design Patterns
+
+| Pattern | Implementation |
+|---------|---------------|
+| **Decorator** | `AuditDecorator` transparently wraps use cases to add audit logging after each operation |
+| **Repository** | Abstract interfaces (`DocumentRepository`, `Audit_LogRepository`) with MongoDB implementations |
+| **Pipeline / Chain of Responsibility** | `flow_validation.py` chains 5 sequential PDF verification checks |
+| **DTO / Mapper** | `to_dto.py` converts between raw dicts (from MongoDB) and domain entities |
+| **Dependency Injection** | FastAPI `Depends()` with factory functions in `dependencies.py` |
+| **Singleton** | MongoDB connection managed as a module-level singleton (`mongo_connection`) |
+
 ## Documentation / Diagrams
 
 The project includes UML diagrams generated with PlantUML located in `docs/diagrams/`:
@@ -267,6 +292,32 @@ To regenerate the diagrams, use:
 ```bash
 java -jar plantuml.jar docs/diagrams/**/*.puml
 ```
+
+## Database Schema
+
+The application uses MongoDB with two collections:
+
+### Collection: `file`
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `file_name` | string | Original PDF filename |
+| `checksum` | string | SHA-256 hash of extracted text (unique index) |
+| `text` | string | Extracted text content |
+| `date` | datetime | UTC timestamp of creation |
+
+A **unique index** on the `checksum` field is created automatically on first connection to prevent duplicate documents.
+
+### Collection: `audit_logs`
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `_id` | ObjectId | Auto-generated MongoDB ID |
+| `action` | string | One of: `save`, `update`, `delete`, `process` |
+| `entity_type` | string | Always `Document` |
+| `checksum` | string | The document's checksum |
+| `details` | dict or null | Optional additional details |
+| `performed_at` | datetime | UTC timestamp of the action |
 
 ## Requirements
 
@@ -308,6 +359,28 @@ java -jar plantuml.jar docs/diagrams/**/*.puml
    uv sync --extra dev
    ```
 
+## Environment Variables
+
+All configuration is managed through environment variables defined in `.env`. Copy `.env.example` to `.env` and customize as needed:
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `MONGO_USER` | `user_name` | MongoDB authentication username |
+| `MONGO_PASSWORD` | `user_password` | MongoDB authentication password |
+| `MONGO_PORT` | `27017` | MongoDB port |
+| `MONGO_HOST` | `localhost` | MongoDB host |
+| `MONGO_CLIENT` | `mongo_client` | MongoDB database name |
+| `MONGO_COLLECTION_FILE` | `file` | Collection name for documents |
+| `MONGO_COLLECTION_AUDIT_LOGS` | `audit_logs` | Collection name for audit logs |
+| `MAX_BYTES` | `15728640` (15 MB) | Maximum allowed file size in bytes |
+| `MIN_BYTES` | `0` | Minimum allowed file size in bytes |
+| `AUDIT_SAVE_ACTION` | `save` | Audit action label for save operations |
+| `AUDIT_UPDATE_ACTION` | `update` | Audit action label for update operations |
+| `AUDIT_DELETE_ACTION` | `delete` | Audit action label for delete operations |
+| `AUDIT_PROCESS_ACTION` | `process` | Audit action label for process/upload operations |
+| `AUDIT_ENTITY_TYPE` | `Document` | Entity type for audit logs |
+| `LOG_LEVEL` | `INFO` | Logging level (`DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL`) |
+
 ## Running
 
 **Development mode:**
@@ -321,9 +394,17 @@ uv run uvicorn app.main:app --host 0.0.0.0 --port 8000
 ```
 
 **Docker mode:**
+
+> **Prerequisite:** The `compose.yaml` uses an external Docker network named `mired`. Create it first if it doesn't exist:
+> ```bash
+> docker network create mired
+> ```
+
 ```bash
 docker compose up --build
 ```
+
+> For Docker deployment details (multi-stage build, non-root user, healthcheck), see [`README.Docker.md`](README.Docker.md).
 
 The API will be available at `http://localhost:8000`
 
@@ -344,6 +425,19 @@ The API will be available at `http://localhost:8000`
 | DELETE | `/delete/{checksum}` | Delete a document by checksum | 200 OK |
 | GET | `/audit/logs` | List all audit logs (paginated) | 200 OK |
 | GET | `/audit/logs/checksum/{checksum}` | Find audit logs by document checksum | 200 OK |
+
+### Upload Flow (Two-Step Design)
+
+The upload process is split into two independent steps:
+
+1. **`POST /upload`** — Validates the PDF (security checks), extracts text, and returns the result. **Does NOT persist** to the database.
+2. **`POST /save`** — Takes the document data and persists it to MongoDB.
+
+This design allows the client to review the extracted text before deciding to store it.
+
+### Checksum
+
+Documents are identified by a **SHA-256 checksum** computed from the **extracted text content** (not the raw PDF bytes). This means two different PDFs containing identical text will share the same checksum. The checksum serves as the unique identifier for all CRUD operations.
 
 ### Error Responses
 
@@ -385,7 +479,7 @@ curl -X POST "http://localhost:8000/upload" \
   "file_name": "document.pdf",
   "checksum": "a1b2c3d4e5f6...",
   "text": "Text extracted from PDF document...",
-  "date": "2025-06-15T10:30:00"
+  "date": "2026-06-15T10:30:00"
 }
 ```
 
@@ -406,7 +500,7 @@ curl -X PUT "http://localhost:8000/update/a1b2c3d4e5f6" \
   "file_name": "new_name.pdf",
   "text": "new content updated",
   "checksum": "a1b2c3d4e5f6",
-  "date": "2025-06-15T10:30:00"
+  "date": "2026-06-15T10:30:00"
 }
 ```
 
@@ -419,7 +513,7 @@ curl -X POST "http://localhost:8000/save" \
     "file_name": "document.pdf",
     "checksum": "a1b2c3d4e5f6",
     "text": "full text extracted from the document",
-    "date": "2025-06-15T10:30:00"
+    "date": "2026-06-15T10:30:00"
   }'
 ```
 
@@ -429,7 +523,7 @@ curl -X POST "http://localhost:8000/save" \
   "file_name": "document.pdf",
   "checksum": "a1b2c3d4e5f6",
   "text": "Full text extracted from the document",
-  "date": "2025-06-15T10:30:00"
+  "date": "2026-06-15T10:30:00"
 }
 ```
 
@@ -445,7 +539,7 @@ curl -X GET "http://localhost:8000/find/a1b2c3d4e5f6"
   "file_name": "document.pdf",
   "checksum": "a1b2c3d4e5f6",
   "text": "Full text extracted from the document",
-  "date": "2025-06-15T10:30:00"
+  "date": "2026-06-15T10:30:00"
 }
 ```
 
@@ -461,7 +555,7 @@ curl -X DELETE "http://localhost:8000/delete/a1b2c3d4e5f6"
   "file_name": "document.pdf",
   "checksum": "a1b2c3d4e5f6",
   "text": "full text extracted from the document",
-  "date": "2025-06-15T10:30:00"
+  "date": "2026-06-15T10:30:00"
 }
 ```
 
@@ -479,7 +573,7 @@ curl -X GET "http://localhost:8000/audit/logs?skip=0&limit=10"
     "entity_type": "Document",
     "checksum": "a1b2c3d4e5f6",
     "details": null,
-    "performed_at": "2025-06-15T10:30:00",
+    "performed_at": "2026-06-15T10:30:00",
     "_id": "abc123def456"
   }
 ]
@@ -499,7 +593,7 @@ curl -X GET "http://localhost:8000/audit/logs/checksum/a1b2c3d4e5f6"
     "entity_type": "Document",
     "checksum": "a1b2c3d4e5f6",
     "details": null,
-    "performed_at": "2025-06-15T10:30:00",
+    "performed_at": "2026-06-15T10:30:00",
     "_id": "abc123def456"
   }
 ]
@@ -548,6 +642,24 @@ The system performs the following validations on uploaded PDFs:
   ```bash
   uv run mypy app
   ```
+
+## Logging
+
+The application uses **JSON-formatted structured logging** via `python-json-logger`. Logs are written to `stdout` in the following format:
+
+```json
+{"asctime": "2026-07-25 10:30:00,123", "name": "pdf-extractext", "levelname": "INFO", "message": "Connected to MongoDB successfully."}
+```
+
+The log level is configurable through the `LOG_LEVEL` environment variable (default: `INFO`).
+
+## Tool Configuration
+
+| Tool | Configuration |
+|------|--------------|
+| **Ruff** | Target: `py314`. Rules: `E`, `F`, `I`, `N`, `W`, `UP` |
+| **Pytest** | `asyncio_mode = "auto"`, test paths: `tests/` |
+| **Build System** | Hatchling (`hatchling.build`), packages: `app/` |
 
 ## Methodology
 
