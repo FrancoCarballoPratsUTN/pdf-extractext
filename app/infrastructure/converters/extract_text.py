@@ -20,4 +20,4 @@ class ExtractText(Converter):
             return text
         except Exception as e:
             loger.critical("Error extracting text from PDF", exc_info=True)
-            
+            raise e

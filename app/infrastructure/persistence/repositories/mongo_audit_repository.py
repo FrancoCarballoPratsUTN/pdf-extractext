@@ -37,9 +37,11 @@ class MongoAuditLogRepository(Audit_LogRepository):
             list[AuditLog]: A list of audit logs.
         """
         cursor = self._collection.find().skip(skip).limit(limit)
-        loger.info(f"Retrieved {cursor.count()} audit logs from the database.")
-        return [to_audit_log_dto({**doc, "_id": str(doc["_id"])}) for doc in cursor]
+        result = [to_audit_log_dto({**doc, "_id": str(doc["_id"])}) for doc in cursor]
+        loger.info(f"Retrieved {len(list(cursor))} audit logs from the database.")
 
+        return result
+        
 
     def find_by_checksum(self, checksum: str) -> list[AuditLog]: 
         """
