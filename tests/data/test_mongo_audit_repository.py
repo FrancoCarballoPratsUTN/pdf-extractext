@@ -9,8 +9,9 @@ from app.infrastructure.persistence.repositories.mongo_audit_repository import M
 @pytest.fixture
 def audit_repo():
     """
-    Instancia el repositorio inyectando un cliente sincrónico de mongomock.
-    Cumple con Inyección de Dependencias (SOLID) y mantiene el setup simple (KISS).
+    Initializes a MongoAuditLogRepository with a mocked MongoDB collection for testing purposes.
+    Returns:
+        MongoAuditLogRepository: An instance of the repository with a mocked collection.    
     """
     client = mongomock.MongoClient()
     db = client["test_db"]
