@@ -1,7 +1,8 @@
 import pytest
+
 from app.domain.exceptions.domain_exceptions import DocumentNotFoundError
-from tests.conftest import mock_document
 from tests.data.mock_repository import get_mock_repository
+
 
 def test_find_by_checksum(mock_document):
     """Test the find_by_checksum functionality of the MongoRepository."""
@@ -17,4 +18,3 @@ def test_find_by_checksum_not_found():
     mock_repo = get_mock_repository()
     with pytest.raises(DocumentNotFoundError):
         mock_repo.find_by_checksum("nonexistent_checksum")
-        

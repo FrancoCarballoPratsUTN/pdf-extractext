@@ -1,14 +1,13 @@
-from app.presentation.schemas.exception_response import ProblemDetailsSchema
-from app.domain.exceptions.domain_exceptions import DocumentNotFoundError
-from fastapi import Depends
+from fastapi import APIRouter, Depends
+
+from app.domain.use_cases.crud.find_use_case import FindDocumentUseCase
 from app.infrastructure.dependencies.dependencies import get_find_document_use_case
 from app.presentation.schemas.document import DocumentSchema
-from fastapi import APIRouter
-from app.domain.use_cases.crud.find_use_case import FindDocumentUseCase
+from app.presentation.schemas.exception_response import ProblemDetailsSchema
 
 router = APIRouter()
 @router.get(
-    '/find/{checksum}', 
+    '/find/{checksum}',
     response_model=DocumentSchema,
     responses={
         404: {"model": ProblemDetailsSchema, "description": "Document not found by the provided checksum"},

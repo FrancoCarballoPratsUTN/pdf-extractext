@@ -1,7 +1,10 @@
-from app.config.settings import settings
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure
+
 from app.config.logging_config import loger
+from app.config.settings import settings
+
+
 class MongoDBConnection:
     def __init__(self):
         self._client = None
@@ -21,7 +24,7 @@ class MongoDBConnection:
                     username=user,
                     password=password,
                     authSource="admin",
-                    serverSelectionTimeoutMS=5000 
+                    serverSelectionTimeoutMS=5000
                 )
                 self._db = self._client[settings.mongo_client]
                 self._ensure_indexes()

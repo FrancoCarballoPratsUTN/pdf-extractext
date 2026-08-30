@@ -1,17 +1,17 @@
-from typing import Optional
+
 
 class ProblemDetailError(Exception):
     """
     Base class for all domain exceptions.
     It follows the structure of RFC 9457.
     """
-    def __init__(self, title: str, status: int, detail: str, type: str = "about:blank", instance: Optional[str] = None):
+    def __init__(self, title: str, status: int, detail: str, type: str = "about:blank", instance: str | None = None):
         self.title = title
         self.status = status
         self.detail = detail
         self.type = type
         self.instance = instance
-        self.media_type = "application/problem+json" 
+        self.media_type = "application/problem+json"
         super().__init__(self.detail)
 
 class DocumentNotFoundError(ProblemDetailError):

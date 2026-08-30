@@ -1,4 +1,8 @@
-from app.domain.use_cases.verifications.file_size_validator import validate_file_size, MAX_FILE_SIZE_BYTES
+from app.domain.use_cases.verifications.file_size_validator import (
+    MAX_FILE_SIZE_BYTES,
+    validate_file_size,
+)
+
 
 def test_validate_file_size_success():
     file_size = 1024

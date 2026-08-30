@@ -1,14 +1,15 @@
-from app.presentation.schemas.exception_response import ProblemDetailsSchema
-from app.infrastructure.dependencies.dependencies import get_process_document_use_case
+from fastapi import APIRouter, Depends, UploadFile, status
+
 from app.domain.use_cases.converter import ProcessDocumentUseCase
+from app.infrastructure.dependencies.dependencies import get_process_document_use_case
 from app.presentation.middleware.check_middleware import check_middleware
-from fastapi import APIRouter, UploadFile, Depends, status
 from app.presentation.schemas.document import DocumentSchema
+from app.presentation.schemas.exception_response import ProblemDetailsSchema
 
 router = APIRouter()
 
 @router.post(
-    '/upload', 
+    '/upload',
     response_model=DocumentSchema,
     status_code=status.HTTP_201_CREATED,
     responses={
@@ -37,4 +38,3 @@ async def upload_file(file_validate: UploadFile = Depends(check_middleware), con
     file_content = await file_validate.read()
     document_generated = conversor.execute(file_content, file_validate.filename)
     return document_generated
-    

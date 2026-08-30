@@ -1,7 +1,5 @@
-import pytest
 from app.domain.entities.audit_log import AuditLog
 from app.domain.use_cases.audit.audit_decorator import AuditDecorator
-
 
 
 class MockUseCase:
@@ -23,7 +21,7 @@ class MockUseCase:
             assert args == self.expected_args
         if self.expected_kwargs is not None:
             assert kwargs == self.expected_kwargs
-            
+
         return self.return_value
 
 
@@ -44,7 +42,7 @@ def test_audit_decorator_executes_use_case_and_saves_log():
     stub_result = type("Result", (), {"checksum": "result-checksum"})()
     mock_use_case = MockUseCase(return_value=stub_result)
     mock_repo = MockAuditRepository()
-    
+
     decorator = AuditDecorator(
         use_case=mock_use_case,
         audit_repo=mock_repo,
@@ -65,7 +63,7 @@ def test_audit_decorator_executes_use_case_and_saves_log():
 def test_audit_decorator_uses_kwargs_checksum_when_result_no_checksum():
     mock_use_case = MockUseCase(return_value="plain-result")
     mock_repo = MockAuditRepository()
-    
+
     decorator = AuditDecorator(
         use_case=mock_use_case,
         audit_repo=mock_repo,
@@ -83,7 +81,7 @@ def test_audit_decorator_uses_kwargs_checksum_when_result_no_checksum():
 def test_audit_decorator_empty_checksum_when_not_found():
     mock_use_case = MockUseCase(return_value="plain-result")
     mock_repo = MockAuditRepository()
-    
+
     decorator = AuditDecorator(
         use_case=mock_use_case,
         audit_repo=mock_repo,
@@ -101,10 +99,10 @@ def test_audit_decorator_forwards_args_and_kwargs():
     stub_result = type("Result", (), {"checksum": "cs"})()
     expected_args = ("arg1", "arg2")
     expected_kwargs = {"key": "value"}
-    
+
     mock_use_case = MockUseCase(
-        return_value=stub_result, 
-        expected_args=expected_args, 
+        return_value=stub_result,
+        expected_args=expected_args,
         expected_kwargs=expected_kwargs
     )
     mock_repo = MockAuditRepository()

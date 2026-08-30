@@ -1,14 +1,13 @@
-from app.presentation.schemas.exception_response import ProblemDetailsSchema
-from app.domain.exceptions.domain_exceptions import DocumentNotFoundError
-from app.infrastructure.dependencies.dependencies import get_update_document_use_case
-from fastapi import Depends, status
-from app.presentation.schemas.document import DocumentSchema
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends, status
+
 from app.domain.use_cases.crud.update_use_case import UpdateDocumentUseCase
+from app.infrastructure.dependencies.dependencies import get_update_document_use_case
+from app.presentation.schemas.document import DocumentSchema
+from app.presentation.schemas.exception_response import ProblemDetailsSchema
 
 router = APIRouter()
 @router.put(
-    '/update/{checksum}', 
+    '/update/{checksum}',
     response_model=DocumentSchema,
     status_code=status.HTTP_200_OK,
     responses={

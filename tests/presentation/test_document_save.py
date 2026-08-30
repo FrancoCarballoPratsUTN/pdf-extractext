@@ -1,8 +1,10 @@
-from fastapi.testclient import TestClient
 from dataclasses import asdict
-from app.main import app
-from app.infrastructure.dependencies.dependencies import get_save_document_use_case
+
+from fastapi.testclient import TestClient
+
 from app.domain.exceptions.domain_exceptions import DocumentAlreadyExistsError
+from app.infrastructure.dependencies.dependencies import get_save_document_use_case
+from app.main import app
 
 client = TestClient(app)
 

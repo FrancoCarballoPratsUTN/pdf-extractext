@@ -1,7 +1,8 @@
 from fastapi.testclient import TestClient
-from app.main import app 
-from app.infrastructure.dependencies.dependencies import get_process_document_use_case 
+
 from app.domain.exceptions.domain_exceptions import DocumentValidationError
+from app.infrastructure.dependencies.dependencies import get_process_document_use_case
+from app.main import app
 
 client = TestClient(app)
 
@@ -21,7 +22,7 @@ def test_upload_pdf_validation_error(mock_document_error, file_upload):
 
     assert response.status_code == 422
     assert response.headers["Content-Type"] == "application/problem+json"
-    
+
     data = response.json()
     assert data["title"] == "Document Validation Error"
     assert data["detail"] == error_msg

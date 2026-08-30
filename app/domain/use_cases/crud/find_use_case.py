@@ -1,4 +1,6 @@
 from app.domain.entities.document import Document
+
+
 class FindDocumentUseCase:
     """Use case for finding a document in the repository."""
     def __init__(self, repository):

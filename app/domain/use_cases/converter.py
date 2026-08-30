@@ -1,12 +1,14 @@
-from app.domain.exceptions.domain_exceptions import DocumentValidationError
-from app.domain.use_cases.flows.flow_validation import do_validation
-from app.domain.use_cases.flows.flow_building import flow_building
+from app.domain.contracts.document_converter import Converter
 from app.domain.entities.document import Document
-from app.infrastructure.converters.extract_text import ExtractText
+from app.domain.exceptions.domain_exceptions import DocumentValidationError
+from app.domain.use_cases.flows.flow_building import flow_building
+from app.domain.use_cases.flows.flow_validation import do_validation
+
+
 class ProcessDocumentUseCase:
     """Use case for processing a document using a specified converter."""
-    def __init__(self):
-        self.converter = ExtractText()  
+    def __init__(self, converter: Converter):
+        self.converter = converter
 
     def execute(self, file_content: bytes, filename: str)-> Document:
         """
@@ -17,10 +19,10 @@ class ProcessDocumentUseCase:
         Returns:
                 Document: The processed document entity.
         """
-        if not do_validation(file_content): 
+        if not do_validation(file_content):
             raise DocumentValidationError("Invalid PDF or corrupted file.")
 
         text = self.converter.convert(file_content)
         text_encode = text.encode('utf-8')
-        
+
         return flow_building(text_encode, filename)

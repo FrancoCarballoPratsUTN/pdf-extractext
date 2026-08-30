@@ -1,6 +1,9 @@
 import io
+
 from pypdf import PdfReader
+
 from app.config.logging_config import loger
+
 
 def encryptation_check(document_content: bytes) -> bool:
     """

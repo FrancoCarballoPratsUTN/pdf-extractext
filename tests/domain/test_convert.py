@@ -1,10 +1,12 @@
+import pytest
+
 from app.infrastructure.converters.extract_text import ExtractText
 from tests.domain.mock_pdf import create_mock_pdf
-import pytest
+
 
 def test_invalid_pdf_conversion():
     """Test the conversion of an invalid PDF file using the ExtractText converter."""
-    invalid_pdf_content = b"%PDF-1.4\n%...\n"  
+    invalid_pdf_content = b"%PDF-1.4\n%...\n"
     converter = ExtractText()
     with pytest.raises(Exception):
         converter.convert(invalid_pdf_content)

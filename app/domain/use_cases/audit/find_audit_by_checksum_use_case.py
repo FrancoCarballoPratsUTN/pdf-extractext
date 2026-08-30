@@ -1,6 +1,7 @@
 from app.domain.entities.audit_log import AuditLog
 from app.domain.repositories.audit_log_repository import Audit_LogRepository
 
+
 class FindAuditLogsByChecksumUseCase:
     """Use case for finding audit logs by document checksum."""
     def __init__(self, repo: Audit_LogRepository):

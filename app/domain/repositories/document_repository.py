@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+
 class DocumentRepository(ABC):
     """Interface for document repository."""
     @abstractmethod
@@ -18,4 +19,3 @@ class DocumentRepository(ABC):
     def delete(self, document_checksum):
         pass
 
-    

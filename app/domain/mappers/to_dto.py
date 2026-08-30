@@ -1,6 +1,7 @@
 from app.domain.entities.audit_log import AuditLog
 from app.domain.entities.document import Document
 
+
 def to_document_dto(document: dict) -> Document:
     """Converts a dictionary document to a Document DTO.
     Args:        document (dict): The dictionary document to convert.

@@ -1,7 +1,8 @@
 from fastapi.testclient import TestClient
-from app.main import app
-from app.infrastructure.dependencies.dependencies import get_find_document_use_case
+
 from app.domain.exceptions.domain_exceptions import DocumentNotFoundError
+from app.infrastructure.dependencies.dependencies import get_find_document_use_case
+from app.main import app
 
 client = TestClient(app)
 
@@ -9,7 +10,7 @@ def test_find_document_success(mock_document_success):
     checksum = "UNIQUE-FILE-CODE"
     app.dependency_overrides[get_find_document_use_case] = lambda: mock_document_success
     response = client.get(f"/find/{checksum}")
-    
+
     assert response.status_code == 200
 
     data = response.json()

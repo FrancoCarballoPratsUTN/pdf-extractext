@@ -1,8 +1,9 @@
-from pypdf import PdfReader
-from pypdf import PdfWriter
-from reportlab.pdfgen import canvas
-from reportlab.lib.pagesizes import letter
 import io
+
+from pypdf import PdfReader, PdfWriter
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+
 
 def create_mock_pdf(encrypted: bool, password: str = "123456", is_image: bool = False) -> bytes:
     """Helper function to create a mock PDF content."""
@@ -13,10 +14,10 @@ def create_mock_pdf(encrypted: bool, password: str = "123456", is_image: bool = 
         can.setFont("Helvetica", 12)
         can.drawString(100, 680, "It is a test PDF document.")
     else:
-        can.rect(100, 600, 400, 100, fill=0) 
+        can.rect(100, 600, 400, 100, fill=0)
 
     can.save()
-    
+
     packet.seek(0)
     new_pdf = PdfReader(packet)
     writer = PdfWriter()
@@ -24,7 +25,7 @@ def create_mock_pdf(encrypted: bool, password: str = "123456", is_image: bool = 
 
     if encrypted:
         writer.encrypt(password)
-    
+
     final_buffer = io.BytesIO()
     writer.write(final_buffer)
 

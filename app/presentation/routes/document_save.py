@@ -1,16 +1,16 @@
-from app.presentation.schemas.exception_response import ProblemDetailsSchema
 from fastapi import APIRouter, Depends, status
-from app.presentation.schemas.document import DocumentSchema
+
 from app.domain.entities.document import Document
-from app.domain.exceptions.domain_exceptions import DocumentAlreadyExistsError, DocumentValidationError
 from app.domain.use_cases.crud.save_use_case import SaveDocumentUseCase
 from app.infrastructure.dependencies.dependencies import get_save_document_use_case
+from app.presentation.schemas.document import DocumentSchema
+from app.presentation.schemas.exception_response import ProblemDetailsSchema
 
 router = APIRouter()
 
 @router.post(
-    '/save', 
-    response_model=DocumentSchema, 
+    '/save',
+    response_model=DocumentSchema,
     status_code=status.HTTP_201_CREATED,
     responses={
         409: {"model": ProblemDetailsSchema, "description": "Document already exists (Conflict)"},

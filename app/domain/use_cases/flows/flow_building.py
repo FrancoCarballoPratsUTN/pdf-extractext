@@ -1,4 +1,5 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
+
 from app.domain.entities.document import Document
 from app.domain.use_cases.checksum import generate_checksum
 
@@ -12,15 +13,15 @@ def flow_building(text: bytes, filename: str) -> Document:
         Document: A Document entity containing the checksum, filename, and creation date.
     """
     checksum = generate_checksum(text)
-    date_now = datetime.now(timezone.utc)
-    
+    date_now = datetime.now(UTC)
+
     document = Document(
         checksum=checksum,
         file_name=filename,
         text=text.decode('utf-8'),
         date=date_now
     )
-    
+
     return document
-    
+
 

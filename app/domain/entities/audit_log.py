@@ -1,6 +1,6 @@
-from dataclasses import field
-from dataclasses import dataclass
-from datetime import datetime, timezone
+from dataclasses import dataclass, field
+from datetime import UTC, datetime
+
 
 @dataclass
 class AuditLog:
@@ -8,5 +8,5 @@ class AuditLog:
     entity_type: str
     checksum: str
     details: dict | None = None
-    performed_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
-    _id: str | None = None 
+    performed_at: datetime = field(default_factory=lambda: datetime.now(UTC))
+    _id: str | None = None

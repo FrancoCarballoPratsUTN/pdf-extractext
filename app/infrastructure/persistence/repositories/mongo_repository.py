@@ -1,13 +1,19 @@
 from dataclasses import asdict
-from pymongo.errors import DuplicateKeyError
+
 from pymongo import ReturnDocument
-from app.config.settings import settings
-from app.domain.exceptions.domain_exceptions import DocumentAlreadyExistsError
-from app.domain.exceptions.domain_exceptions import DocumentNotFoundError
-from app.domain.repositories.document_repository import DocumentRepository
-from app.domain.mappers.to_dto import to_document_dto
-from app.domain.entities.document import Document
+from pymongo.errors import DuplicateKeyError
+
 from app.config.logging_config import loger
+from app.config.settings import settings
+from app.domain.entities.document import Document
+from app.domain.exceptions.domain_exceptions import (
+    DocumentAlreadyExistsError,
+    DocumentNotFoundError,
+)
+from app.domain.mappers.to_dto import to_document_dto
+from app.domain.repositories.document_repository import DocumentRepository
+
+
 class MongoRepository(DocumentRepository):
     """MongoDB implementation of the DocumentRepository interface."""
     def __init__(self, db):
@@ -42,7 +48,7 @@ class MongoRepository(DocumentRepository):
             raise DocumentNotFoundError("Document not found.")
 
         loger.debug(f"Document found: {document_checksum}")
-        return to_document_dto(document) 
+        return to_document_dto(document)
 
     def update(self, document_checksum: str, new_data: dict)-> Document:
         """Updates an existing document in the MongoDB collection.

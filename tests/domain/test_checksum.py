@@ -1,5 +1,6 @@
-from app.domain.exceptions.domain_exceptions import DocumentChecksumError
 import pytest
+
+from app.domain.exceptions.domain_exceptions import DocumentChecksumError
 from app.domain.use_cases.checksum import generate_checksum
 
 

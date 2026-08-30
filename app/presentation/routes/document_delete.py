@@ -1,12 +1,11 @@
-from app.presentation.schemas.exception_response import ProblemDetailsSchema
-from app.domain.exceptions.domain_exceptions import DocumentNotFoundError
-from app.infrastructure.dependencies.dependencies import get_delete_document_use_case
-from fastapi import Depends
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+
 from app.domain.use_cases.crud.delete_use_case import DeleteDocumentUseCase
+from app.infrastructure.dependencies.dependencies import get_delete_document_use_case
+from app.presentation.schemas.exception_response import ProblemDetailsSchema
 
 router = APIRouter()
-@router.delete('/delete/{checksum}', 
+@router.delete('/delete/{checksum}',
     response_model=dict,
     status_code=200,
     responses={

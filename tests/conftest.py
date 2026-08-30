@@ -1,8 +1,11 @@
-from app.domain.entities.document import Document
-from app.main import app
 from datetime import datetime
-from app.infrastructure.dependencies.dependencies import get_process_document_use_case
+
 import pytest
+
+from app.domain.entities.document import Document
+from app.infrastructure.dependencies.dependencies import get_process_document_use_case
+from app.main import app
+
 
 @pytest.fixture
 def mock_document():
@@ -27,7 +30,7 @@ def override(monkeypatch, mock_document):
     class MockUseCase:
         def execute(self, file_name, text):
             return mock_document["result"]
-        
+
     app.dependency_overrides[get_process_document_use_case] = lambda: MockUseCase()
     yield
     app.dependency_overrides.clear()
@@ -44,13 +47,13 @@ def mock_document_success(mock_document):
 
         def execute(self, checksum=None, data=None, **kwargs):
             """Allows dynamic response based on input, useful for multiple test scenarios."""
-     
+
             current_checksum = checksum
             try:
                 current_checksum = checksum.checksum
             except AttributeError:
                 current_checksum = checksum
-            
+
             final_text = self.text
             if data and isinstance(data, dict) and "text" in data:
                 final_text = data["text"]

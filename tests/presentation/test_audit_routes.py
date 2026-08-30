@@ -1,9 +1,14 @@
-from fastapi.testclient import TestClient
 from datetime import datetime
-from app.main import app
-from app.infrastructure.dependencies.dependencies import get_find_audit_use_case, get_find_audit_by_checksum
-from app.domain.exceptions.domain_exceptions import DocumentNotFoundError
+
+from fastapi.testclient import TestClient
+
 from app.domain.entities.audit_log import AuditLog
+from app.domain.exceptions.domain_exceptions import DocumentNotFoundError
+from app.infrastructure.dependencies.dependencies import (
+    get_find_audit_by_checksum,
+    get_find_audit_use_case,
+)
+from app.main import app
 
 client = TestClient(app)
 

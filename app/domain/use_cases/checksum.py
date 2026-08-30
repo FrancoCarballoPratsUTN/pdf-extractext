@@ -1,5 +1,7 @@
-from app.domain.exceptions.domain_exceptions import DocumentChecksumError
 import hashlib
+
+from app.domain.exceptions.domain_exceptions import DocumentChecksumError
+
 
 def generate_checksum(content: bytes) -> str:
     if not content:

@@ -18,7 +18,7 @@ class MockAuditRepository:
     def find_all(self, skip: int, limit: int):
         self.captured_skip = skip
         self.captured_limit = limit
-        
+
         if len(self.data_pool) <= limit and skip == 0:
             return self.data_pool
         return self.data_pool[skip : skip + limit]

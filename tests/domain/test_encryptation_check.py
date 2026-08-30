@@ -1,5 +1,5 @@
 from app.domain.use_cases.verifications.encryptation_check import encryptation_check
-from tests.domain.mock_pdf  import create_mock_pdf
+from tests.domain.mock_pdf import create_mock_pdf
 
 
 def test_encryptation_check_encrypted():

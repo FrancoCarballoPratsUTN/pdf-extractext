@@ -1,6 +1,9 @@
 import io
+
 from pypdf import PdfReader
+
 from app.config.logging_config import loger
+
 
 def liveness_check(document_content: bytes) -> bool:
     """
@@ -12,7 +15,7 @@ def liveness_check(document_content: bytes) -> bool:
     Returns:
         bool: True if the PDF is valid and can be read, False otherwise.
     """
-    try:  
+    try:
         reader = PdfReader(io.BytesIO(document_content))
         _ = reader.pages[0]
         loger.info("PDF liveness check completed successfully.")

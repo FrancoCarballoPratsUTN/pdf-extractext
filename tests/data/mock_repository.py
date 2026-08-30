@@ -1,5 +1,7 @@
-from app.infrastructure.persistence.repositories.mongo_repository import MongoRepository
 import mongomock
+
+from app.infrastructure.persistence.repositories.mongo_repository import MongoRepository
+
 
 def get_mock_repository():
     """Returns a mock MongoRepository instance for testing."""

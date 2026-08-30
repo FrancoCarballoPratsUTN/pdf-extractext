@@ -1,5 +1,7 @@
 import logging
+
 from pythonjsonlogger import json
+
 from app.config.settings import settings
 
 loger = logging.getLogger("pdf-extractext")

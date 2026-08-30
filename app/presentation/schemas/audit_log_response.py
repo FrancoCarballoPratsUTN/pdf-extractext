@@ -1,6 +1,7 @@
-from pydantic import ConfigDict, Field
 from datetime import datetime
-from pydantic import BaseModel
+
+from pydantic import BaseModel, ConfigDict, Field
+
 
 class AuditLogSchema(BaseModel):
     """Response model for audit log entries."""

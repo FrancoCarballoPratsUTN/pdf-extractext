@@ -1,9 +1,13 @@
-import pytest
-import mongomock
 from datetime import datetime
+
+import mongomock
+import pytest
+
 from app.domain.entities.audit_log import AuditLog
 from app.domain.exceptions.domain_exceptions import DocumentNotFoundError
-from app.infrastructure.persistence.repositories.mongo_audit_repository import MongoAuditLogRepository
+from app.infrastructure.persistence.repositories.mongo_audit_repository import (
+    MongoAuditLogRepository,
+)
 
 
 @pytest.fixture

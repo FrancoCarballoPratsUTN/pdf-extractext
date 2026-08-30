@@ -1,5 +1,7 @@
 from app.domain.entities.audit_log import AuditLog
-from app.domain.use_cases.audit.find_audit_by_checksum_use_case import FindAuditLogsByChecksumUseCase
+from app.domain.use_cases.audit.find_audit_by_checksum_use_case import (
+    FindAuditLogsByChecksumUseCase,
+)
 
 
 class MockAuditRepository:
@@ -22,10 +24,10 @@ def test_find_by_checksum_returns_matching_logs():
         AuditLog(action="save", entity_type="Document", checksum="abc123"),
         AuditLog(action="update", entity_type="Document", checksum="abc123"),
     ]
-    
+
     repo = MockAuditRepository(return_value=expected)
     use_case = FindAuditLogsByChecksumUseCase(repo)
-    
+
     result = use_case.execute("abc123")
 
     assert result == expected
@@ -35,7 +37,7 @@ def test_find_by_checksum_returns_matching_logs():
 def test_find_by_checksum_returns_empty_list():
     repo = MockAuditRepository(return_value=[])
     use_case = FindAuditLogsByChecksumUseCase(repo)
-    
+
     result = use_case.execute("nonexistent")
 
     assert result == []
@@ -44,7 +46,7 @@ def test_find_by_checksum_returns_empty_list():
 def test_find_by_checksum_passes_correct_checksum():
     repo = MockAuditRepository()
     use_case = FindAuditLogsByChecksumUseCase(repo)
-    
+
     use_case.execute("specific-checksum")
 
     assert repo.captured_checksum == "specific-checksum"

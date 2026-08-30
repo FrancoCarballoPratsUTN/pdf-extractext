@@ -17,5 +17,5 @@ def test_file_has_imagen_false():
     Expected: False, because it's a digital text document, not just an image.
     """
     text_pdf = create_mock_pdf(encrypted=False)
-    
+
     assert file_has_imagen(text_pdf) == False

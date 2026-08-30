@@ -1,6 +1,8 @@
 import pytest
-from tests.domain.mock_pdf import create_mock_pdf
+
 from app.domain.use_cases.verifications.liveness_check import liveness_check
+from tests.domain.mock_pdf import create_mock_pdf
+
 
 @pytest.fixture
 def invalid_liveness_data():

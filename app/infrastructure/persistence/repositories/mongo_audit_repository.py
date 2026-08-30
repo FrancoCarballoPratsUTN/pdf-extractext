@@ -1,9 +1,11 @@
-from app.domain.mappers.to_dto import to_audit_log_dto
-from app.domain.exceptions.domain_exceptions import DocumentNotFoundError
-from app.config.settings import settings
-from app.domain.repositories.audit_log_repository import Audit_LogRepository
-from app.domain.entities.audit_log import AuditLog
 from app.config.logging_config import loger
+from app.config.settings import settings
+from app.domain.entities.audit_log import AuditLog
+from app.domain.exceptions.domain_exceptions import DocumentNotFoundError
+from app.domain.mappers.to_dto import to_audit_log_dto
+from app.domain.repositories.audit_log_repository import Audit_LogRepository
+
+
 class MongoAuditLogRepository(Audit_LogRepository):
     def __init__(self, db):
         self._collection = db[settings.mongo_collection_audit_logs]
@@ -41,9 +43,9 @@ class MongoAuditLogRepository(Audit_LogRepository):
         loger.info(f"Retrieved {len(list(cursor))} audit logs from the database.")
 
         return result
-        
 
-    def find_by_checksum(self, checksum: str) -> list[AuditLog]: 
+
+    def find_by_checksum(self, checksum: str) -> list[AuditLog]:
         """
         Finds audit logs by their checksum.
         Args:
@@ -57,6 +59,5 @@ class MongoAuditLogRepository(Audit_LogRepository):
 
         if not docs:
             raise DocumentNotFoundError("No audit logs found with the specified checksum.")
-        
-        return [to_audit_log_dto({**doc, "_id": str(doc["_id"])}) for doc in docs]  
-        
+
+        return [to_audit_log_dto({**doc, "_id": str(doc["_id"])}) for doc in docs]
