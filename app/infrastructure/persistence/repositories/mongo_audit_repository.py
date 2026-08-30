@@ -2,7 +2,7 @@ from app.config.logging_config import loger
 from app.config.settings import settings
 from app.domain.entities.audit_log import AuditLog
 from app.domain.exceptions.domain_exceptions import DocumentNotFoundError
-from app.domain.mappers.to_dto import to_audit_log_dto
+from app.domain.mappers.to_dto import audit_log_to_dict, to_audit_log_dto
 from app.domain.repositories.audit_log_repository import Audit_LogRepository
 
 
@@ -18,12 +18,7 @@ class MongoAuditLogRepository(Audit_LogRepository):
         Returns:
             AuditLog: The saved audit log with an assigned _id.
         """
-        data = {"action": audit_log.action,
-                "entity_type": audit_log.entity_type,
-                "checksum": audit_log.checksum,
-                "details": audit_log.details,
-                "performed_at": audit_log.performed_at}
-
+        data = audit_log_to_dict(audit_log)
         result = self._collection.insert_one(data)
         audit_log._id = str(result.inserted_id)
         loger.info(f"Audit log saved successfully with _id: {audit_log._id}")

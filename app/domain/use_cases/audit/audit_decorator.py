@@ -1,7 +1,7 @@
 from datetime import UTC, datetime
 
 from app.config.logging_config import loger
-from app.domain.mappers.to_dto import to_audit_log_dto
+from app.domain.entities.audit_log import AuditLog
 from app.domain.repositories.audit_log_repository import Audit_LogRepository
 
 
@@ -28,14 +28,13 @@ class AuditDecorator:
 
             checksum = result.checksum if hasattr(result, 'checksum') else kwargs.get('checksum', '')
             self._checksum = checksum
-            log = to_audit_log_dto({
-                "action": self._action,
-                "entity_type": self._entity_type,
-                "checksum": self._checksum,
-                "details": None,
-                "performed_at": datetime.now(UTC),
-                "_id": None
-            })
+            log = AuditLog(
+                action=self._action,
+                entity_type=self._entity_type,
+                checksum=self._checksum,
+                details=f"Action {self._action} performed on {self._entity_type} with checksum {self._checksum}",
+                performed_at=datetime.now(UTC)
+            )
 
             self._audit_repo.save(log)
             loger.info("Audit log created", extra={"action": self._action, "entity_type": self._entity_type, "checksum": self._checksum})

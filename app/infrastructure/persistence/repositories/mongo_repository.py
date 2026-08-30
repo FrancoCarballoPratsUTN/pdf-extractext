@@ -1,4 +1,3 @@
-from dataclasses import asdict
 
 from pymongo import ReturnDocument
 from pymongo.errors import DuplicateKeyError
@@ -10,7 +9,7 @@ from app.domain.exceptions.domain_exceptions import (
     DocumentAlreadyExistsError,
     DocumentNotFoundError,
 )
-from app.domain.mappers.to_dto import to_document_dto
+from app.domain.mappers.to_dto import document_to_dict, to_document_dto
 from app.domain.repositories.document_repository import DocumentRepository
 
 
@@ -27,7 +26,7 @@ class MongoRepository(DocumentRepository):
             Document: The saved document.
         """
         try:
-            dict_document = asdict(document)
+            dict_document = document_to_dict(document)
             self.collection.insert_one(dict_document)
             loger.debug(f"Document saved successfully: {document.checksum}")
             return document

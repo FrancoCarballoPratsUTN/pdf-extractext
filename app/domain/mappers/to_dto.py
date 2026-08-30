@@ -29,3 +29,31 @@ def to_audit_log_dto(audit_log: dict) -> AuditLog:
             performed_at=audit_log.get("performed_at"),
             _id=audit_log.get("_id")
         )
+def document_to_dict(document: Document) -> dict:
+    """Converts a Document DTO to a dictionary.
+    Args:
+        document (Document): The Document DTO to convert.
+    Returns:
+        dict: The converted dictionary representation of the Document.
+    """
+    return {
+        "file_name": document.file_name,
+        "checksum": document.checksum,
+        "text": document.text,
+        "date": document.date
+    }
+
+def audit_log_to_dict(audit_log: AuditLog) -> dict:
+    """Converts an AuditLog DTO to a dictionary.
+    Args:
+        audit_log (AuditLog): The AuditLog DTO to convert.
+    Returns:
+        dict: The converted dictionary representation of the AuditLog.
+    """
+    return {
+        "action": audit_log.action,
+        "entity_type": audit_log.entity_type,
+        "checksum": audit_log.checksum,
+        "details": audit_log.details,
+        "performed_at": audit_log.performed_at,
+    }
