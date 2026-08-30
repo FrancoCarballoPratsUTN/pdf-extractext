@@ -40,5 +40,5 @@ class AuditDecorator:
             self._audit_repo.save(log)
             loger.info("Audit log created", extra={"action": self._action, "entity_type": self._entity_type, "checksum": self._checksum})
             return result
-        except:
-            loger.critical("Error executing use case", exc_info=True)
+        except Exception as audit_error:
+            loger.critical(f"Error executing use case: {audit_error}", exc_info=True)
