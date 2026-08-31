@@ -1,8 +1,9 @@
 
+import logging
+
 from pymongo import ReturnDocument
 from pymongo.errors import DuplicateKeyError
 
-from app.config.logging_config import loger
 from app.config.settings import settings
 from app.domain.entities.document import Document
 from app.domain.exceptions.domain_exceptions import (
@@ -12,7 +13,7 @@ from app.domain.exceptions.domain_exceptions import (
 from app.domain.mappers.to_dto import document_to_dict, to_document_dto
 from app.domain.repositories.document_repository import DocumentRepository
 
-
+logger = logging.getLogger(__name__)
 class MongoRepository(DocumentRepository):
     """MongoDB implementation of the DocumentRepository interface."""
     def __init__(self, db):
@@ -28,7 +29,7 @@ class MongoRepository(DocumentRepository):
         try:
             dict_document = document_to_dict(document)
             self.collection.insert_one(dict_document)
-            loger.debug(f"Document saved successfully: {document.checksum}")
+            logger.debug(f"Document saved successfully: {document.checksum}")
             return document
         except DuplicateKeyError:
             raise DocumentAlreadyExistsError(f"Checksum {document.checksum} already exists.")
@@ -46,7 +47,7 @@ class MongoRepository(DocumentRepository):
         if not document:
             raise DocumentNotFoundError("Document not found.")
 
-        loger.debug(f"Document found: {document_checksum}")
+        logger.debug(f"Document found: {document_checksum}")
         return to_document_dto(document)
 
     def update(self, document_checksum: str, new_data: dict)-> Document:
@@ -63,7 +64,7 @@ class MongoRepository(DocumentRepository):
         if not updated_data:
             raise DocumentNotFoundError("Document not found.")
 
-        loger.debug(f"Document updated successfully: {document_checksum}")
+        logger.debug(f"Document updated successfully: {document_checksum}")
         return to_document_dto(updated_data)
 
     def delete(self, document_checksum: str)->dict:
@@ -78,5 +79,5 @@ class MongoRepository(DocumentRepository):
         if result.deleted_count == 0:
             raise DocumentNotFoundError(f"Document with checksum {document_checksum} not found.")
 
-        loger.debug(f"Document deleted successfully: {document_checksum}")
+        logger.debug(f"Document deleted successfully: {document_checksum}")
         return {"message": "Document deleted successfully."}

@@ -1,10 +1,10 @@
+import logging
 from datetime import UTC, datetime
 
-from app.config.logging_config import loger
 from app.domain.entities.audit_log import AuditLog
 from app.domain.repositories.audit_log_repository import Audit_LogRepository
 
-
+logger = logging.getLogger(__name__)
 class AuditDecorator:
     """
     Decorator for use cases to log actions in the audit log.
@@ -37,7 +37,8 @@ class AuditDecorator:
             )
 
             self._audit_repo.save(log)
-            loger.info("Audit log created", extra={"action": self._action, "entity_type": self._entity_type, "checksum": self._checksum})
+            logger.info("Audit log created", extra={"action": self._action, "entity_type": self._entity_type, "checksum": self._checksum})
             return result
         except Exception as audit_error:
-            loger.critical(f"Error executing use case: {audit_error}", exc_info=True)
+            logger.critical(f"Error executing use case: {audit_error}", exc_info=True)
+            raise

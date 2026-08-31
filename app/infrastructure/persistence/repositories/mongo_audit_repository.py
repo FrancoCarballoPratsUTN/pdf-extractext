@@ -1,11 +1,12 @@
-from app.config.logging_config import loger
+import logging
+
 from app.config.settings import settings
 from app.domain.entities.audit_log import AuditLog
 from app.domain.exceptions.domain_exceptions import DocumentNotFoundError
 from app.domain.mappers.to_dto import audit_log_to_dict, to_audit_log_dto
 from app.domain.repositories.audit_log_repository import Audit_LogRepository
 
-
+logger = logging.getLogger(__name__)
 class MongoAuditLogRepository(Audit_LogRepository):
     def __init__(self, db):
         self._collection = db[settings.mongo_collection_audit_logs]
@@ -21,7 +22,7 @@ class MongoAuditLogRepository(Audit_LogRepository):
         data = audit_log_to_dict(audit_log)
         result = self._collection.insert_one(data)
         audit_log._id = str(result.inserted_id)
-        loger.info(f"Audit log saved successfully with _id: {audit_log._id}")
+        logger.info(f"Audit log saved successfully with _id: {audit_log._id}")
         return audit_log
 
     def find_all(self, skip: int = 0, limit: int = 10) -> list[AuditLog]:
@@ -35,7 +36,7 @@ class MongoAuditLogRepository(Audit_LogRepository):
         """
         cursor = self._collection.find().skip(skip).limit(limit)
         result = [to_audit_log_dto({**doc, "_id": str(doc["_id"])}) for doc in cursor]
-        loger.info(f"Retrieved {len(list(cursor))} audit logs from the database.")
+        logger.info(f"Retrieved {len(list(cursor))} audit logs from the database.")
 
         return result
 
@@ -50,7 +51,7 @@ class MongoAuditLogRepository(Audit_LogRepository):
         """
         cursor = self._collection.find({"checksum": checksum})
         docs = list(cursor)
-        loger.info(f"Audit logs found with checksum {checksum}: {len(docs)}")
+        logger.info(f"Audit logs found with checksum {checksum}: {len(docs)}")
 
         if not docs:
             raise DocumentNotFoundError("No audit logs found with the specified checksum.")

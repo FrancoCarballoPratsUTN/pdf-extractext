@@ -1,9 +1,9 @@
 import io
+import logging
 
 from pypdf import PdfReader
 
-from app.config.logging_config import loger
-
+logger = logging.getLogger(__name__)
 
 def encryptation_check(document_content: bytes) -> bool:
     """
@@ -15,9 +15,9 @@ def encryptation_check(document_content: bytes) -> bool:
     """
     try:
         reader = PdfReader(io.BytesIO(document_content))
-        loger.info("PDF encryption check completed successfully.")
+        logger.info("PDF encryption check completed successfully.")
         return reader.is_encrypted
 
     except Exception as e:
-        loger.warning(f"Error reading PDF: {e}", exc_info=True)
+        logger.warning(f"Error reading PDF: {e}", exc_info=True)
         return False

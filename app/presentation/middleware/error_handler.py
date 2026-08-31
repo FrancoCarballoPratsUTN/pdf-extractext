@@ -1,10 +1,11 @@
+import logging
+
 from fastapi import Request
 from fastapi.responses import JSONResponse
 
-from app.config.logging_config import loger
 from app.domain.exceptions.domain_exceptions import ProblemDetailError
 
-
+logger = logging.getLogger(__name__)
 async def problem_detail_handler(request: Request, exc: ProblemDetailError):
     """
     Handle ProblemDetailError exceptions and return a JSON response with problem details.
@@ -14,7 +15,7 @@ async def problem_detail_handler(request: Request, exc: ProblemDetailError):
     Returns:
         JSONResponse: A JSON response containing the problem details.
     """
-    loger.warning(f"ProblemDetailError: {exc.title} - {exc.detail}", extra={"type": exc.type, "status": exc.status, "instance": request.url.path})
+    logger.warning(f"ProblemDetailError: {exc.title} - {exc.detail}", extra={"type": exc.type, "status": exc.status, "instance": request.url.path})
 
     return  JSONResponse(
         status_code=exc.status,

@@ -1,10 +1,11 @@
+import logging
 from io import BytesIO
 
 from pypdf import PdfReader
 
-from app.config.logging_config import loger
 from app.domain.contracts.document_converter import Converter
 
+logger = logging.getLogger(__name__)
 
 class ExtractText(Converter):
     def convert(self, file_content: bytes) -> str:
@@ -18,8 +19,8 @@ class ExtractText(Converter):
             reader = PdfReader(file_bytes)
             text = "\n".join([pagina.extract_text() for pagina in reader.pages])
 
-            loger.info("Text extracted from PDF successfully.")
+            logger.info("Text extracted from PDF successfully.")
             return text
         except Exception as e:
-            loger.critical("Error extracting text from PDF", exc_info=True)
+            logger.critical("Error extracting text from PDF", exc_info=True)
             raise e

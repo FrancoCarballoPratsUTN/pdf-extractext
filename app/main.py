@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 
+from app.config.logging_config import setup_logging
+from app.config.settings import settings
 from app.domain.exceptions.domain_exceptions import ProblemDetailError
 from app.presentation.middleware.error_handler import problem_detail_handler
 from app.presentation.routes.audit_routes import router as audit_find_router
@@ -10,6 +12,8 @@ from app.presentation.routes.document_find_by_checksum import (
 from app.presentation.routes.document_save import router as document_save_router
 from app.presentation.routes.document_update import router as document_update_router
 from app.presentation.routes.document_upload import router as document_upload_router
+
+setup_logging(log_level=settings.log_level)
 
 app = FastAPI()
 

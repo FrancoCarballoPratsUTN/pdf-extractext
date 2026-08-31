@@ -1,9 +1,9 @@
 import io
+import logging
 
 from pypdf import PdfReader
 
-from app.config.logging_config import loger
-
+logger = logging.getLogger(__name__)
 
 def liveness_check(document_content: bytes) -> bool:
     """
@@ -18,9 +18,9 @@ def liveness_check(document_content: bytes) -> bool:
     try:
         reader = PdfReader(io.BytesIO(document_content))
         _ = reader.pages[0]
-        loger.info("PDF liveness check completed successfully.")
+        logger.info("PDF liveness check completed successfully.")
         return True
 
     except Exception as e:
-        loger.warning(f"Integrity Error reading PDF: {e}", exc_info=True)
+        logger.warning(f"Integrity Error reading PDF: {e}", exc_info=True)
         return False
