@@ -11,8 +11,9 @@ def to_document_dto(document: dict) -> Document:
         file_name=document.get("file_name"),
         checksum=document.get("checksum"),
         text=document.get("text"),
-        date=document.get("date")
+        date=document.get("date"),
     )
+
 
 def to_audit_log_dto(audit_log: dict) -> AuditLog:
     """Converts a dictionary audit log to an AuditLog DTO.
@@ -22,13 +23,15 @@ def to_audit_log_dto(audit_log: dict) -> AuditLog:
         AuditLog: The converted AuditLog DTO.
     """
     return AuditLog(
-            action=audit_log.get("action"),
-            entity_type=audit_log.get("entity_type"),
-            checksum=audit_log.get("checksum"),
-            details=audit_log.get("details"),
-            performed_at=audit_log.get("performed_at"),
-            _id=audit_log.get("_id")
-        )
+        action=audit_log.get("action"),
+        entity_type=audit_log.get("entity_type"),
+        checksum=audit_log.get("checksum"),
+        details=audit_log.get("details"),
+        performed_at=audit_log.get("performed_at"),
+        _id=audit_log.get("_id"),
+    )
+
+
 def document_to_dict(document: Document) -> dict:
     """Converts a Document DTO to a dictionary.
     Args:
@@ -40,8 +43,9 @@ def document_to_dict(document: Document) -> dict:
         "file_name": document.file_name,
         "checksum": document.checksum,
         "text": document.text,
-        "date": document.date
+        "date": document.date,
     }
+
 
 def audit_log_to_dict(audit_log: AuditLog) -> dict:
     """Converts an AuditLog DTO to a dictionary.

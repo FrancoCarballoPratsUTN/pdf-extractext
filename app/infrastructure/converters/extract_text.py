@@ -7,13 +7,14 @@ from app.domain.contracts.document_converter import Converter
 
 logger = logging.getLogger(__name__)
 
+
 class ExtractText(Converter):
     def convert(self, file_content: bytes) -> str:
         """Extracts text from a PDF file.
-            Args:
-                file_content (bytes): The content of the PDF file as bytes.
-            Returns:
-                str: The extracted text from the PDF file."""
+        Args:
+            file_content (bytes): The content of the PDF file as bytes.
+        Returns:
+            str: The extracted text from the PDF file."""
         try:
             file_bytes = BytesIO(file_content)
             reader = PdfReader(file_bytes)

@@ -7,6 +7,7 @@ from app.config.settings import settings
 
 logger = logging.getLogger(__name__)
 
+
 class MongoDBConnection:
     def __init__(self):
         self._client = None
@@ -26,7 +27,7 @@ class MongoDBConnection:
                     username=user,
                     password=password,
                     authSource="admin",
-                    serverSelectionTimeoutMS=5000
+                    serverSelectionTimeoutMS=5000,
                 )
                 self._db = self._client[settings.mongo_client]
                 self._ensure_indexes()
@@ -52,5 +53,6 @@ class MongoDBConnection:
             self._client = None
             self._db = None
             logger.info("MongoDB connection closed.")
+
 
 mongo_connection = MongoDBConnection()

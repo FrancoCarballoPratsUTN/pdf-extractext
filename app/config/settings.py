@@ -4,8 +4,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
 class Settings:
     """Application settings."""
+
     def __init__(self):
         self.host_db = os.getenv("MONGO_HOST")
         self.port_db = int(os.getenv("MONGO_PORT"))
@@ -22,5 +24,6 @@ class Settings:
         self.audit_process_action = os.getenv("AUDIT_PROCESS_ACTION")
         self.audit_entity_type = os.getenv("AUDIT_ENTITY_TYPE")
         self.log_level = os.getenv("LOG_LEVEL", "INFO")
+
 
 settings = Settings()

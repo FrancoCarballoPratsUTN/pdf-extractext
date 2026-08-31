@@ -16,12 +16,7 @@ def flow_building(text: bytes, filename: str) -> Document:
     date_now = datetime.now(UTC)
 
     document = Document(
-        checksum=checksum,
-        file_name=filename,
-        text=text.decode('utf-8'),
-        date=date_now
+        checksum=checksum, file_name=filename, text=text.decode("utf-8"), date=date_now
     )
 
     return document
-
-

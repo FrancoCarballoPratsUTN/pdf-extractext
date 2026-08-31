@@ -13,6 +13,7 @@ def test_update_document(mock_document):
     assert updated_document is not None
     assert updated_document.text == "Updated text content."
 
+
 def test_update_nonexistent_document(mock_document):
     """Test updating a non-existent document."""
     collection = get_mock_repository()

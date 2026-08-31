@@ -11,6 +11,7 @@ def test_file_has_imagen_true():
 
     assert file_has_imagen(image_pdf) == True
 
+
 def test_file_has_imagen_false():
     """
     The PDF has extractable text.

@@ -14,7 +14,7 @@ def mock_document():
         checksum="a6a6a6f6a6cv34",
         file_name="Test Document",
         text="This is a test document.",
-        date=datetime.now()
+        date=datetime.now(),
     )
     return document
 
@@ -64,10 +64,11 @@ def mock_document_success(mock_document):
                 "file_name": self.file_name,
                 "checksum": current_checksum or self.checksum,
                 "text": final_text,
-                "date": "2026-04-27T00:00:00"
+                "date": "2026-04-27T00:00:00",
             }
 
     return UniversalMock(mock_document)
+
 
 @pytest.fixture
 def mock_document_error():
@@ -75,8 +76,11 @@ def mock_document_error():
         class ErrorMock:
             def execute(self, *args, **kwargs):
                 raise exception_to_raise
+
         return ErrorMock()
+
     return _generate_error
+
 
 @pytest.fixture
 def file_upload(mock_document):
@@ -84,7 +88,7 @@ def file_upload(mock_document):
         "file": (
             mock_document.file_name,
             mock_document.text.encode("utf-8"),
-            "application/pdf"
+            "application/pdf",
         )
     }
     return file_upload

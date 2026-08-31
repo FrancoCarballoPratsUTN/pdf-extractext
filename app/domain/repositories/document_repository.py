@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 
 class DocumentRepository(ABC):
     """Interface for document repository."""
+
     @abstractmethod
     def save(self, document):
         pass
@@ -18,4 +19,3 @@ class DocumentRepository(ABC):
     @abstractmethod
     def delete(self, document_checksum):
         pass
-

@@ -7,8 +7,8 @@ def test_encryptation_check_encrypted():
     encrypted_pdf = create_mock_pdf(encrypted=True)
     assert encryptation_check(encrypted_pdf) == True
 
+
 def test_encryptation_check_not_encrypted():
     """Test that the encryptation_check function returns False for a non-encrypted PDF."""
     not_encrypted_pdf = create_mock_pdf(encrypted=False)
     assert encryptation_check(not_encrypted_pdf) == False
-

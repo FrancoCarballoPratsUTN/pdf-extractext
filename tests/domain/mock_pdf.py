@@ -5,7 +5,9 @@ from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 
 
-def create_mock_pdf(encrypted: bool, password: str = "123456", is_image: bool = False) -> bytes:
+def create_mock_pdf(
+    encrypted: bool, password: str = "123456", is_image: bool = False
+) -> bytes:
     """Helper function to create a mock PDF content."""
     packet = io.BytesIO()
     can = canvas.Canvas(packet, pagesize=letter)

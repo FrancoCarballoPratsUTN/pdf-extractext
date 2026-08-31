@@ -4,10 +4,11 @@ from app.domain.use_cases.audit.audit_decorator import AuditDecorator
 
 class MockUseCase:
     """Mock use case to test the AuditDecorator. It can be configured to return a specific value and to assert that it was called with expected arguments.
-        - return_value: The value that the execute method will return when called.
-        - expected_args: A tuple of expected positional arguments that should be passed to the execute method. If provided, the mock will assert that the actual arguments match these.
-        - expected_kwargs: A dictionary of expected keyword arguments that should be passed to the execute method. If provided, the mock will assert that the actual keyword arguments match these.
-        """
+    - return_value: The value that the execute method will return when called.
+    - expected_args: A tuple of expected positional arguments that should be passed to the execute method. If provided, the mock will assert that the actual arguments match these.
+    - expected_kwargs: A dictionary of expected keyword arguments that should be passed to the execute method. If provided, the mock will assert that the actual keyword arguments match these.
+    """
+
     def __init__(self, return_value=None, expected_args=None, expected_kwargs=None):
         self.return_value = return_value
         self.expected_args = expected_args
@@ -29,13 +30,13 @@ class MockAuditRepository:
     """
     Mock audit repository to capture and inspect saved audit logs.
     """
+
     def __init__(self):
         self.saved_logs = []
 
     def save(self, audit_log: AuditLog) -> AuditLog:
         self.saved_logs.append(audit_log)
         return audit_log
-
 
 
 def test_audit_decorator_executes_use_case_and_saves_log():
@@ -47,7 +48,7 @@ def test_audit_decorator_executes_use_case_and_saves_log():
         use_case=mock_use_case,
         audit_repo=mock_repo,
         action="test-action",
-        entity_type="Document"
+        entity_type="Document",
     )
 
     result = decorator.execute()
@@ -68,7 +69,7 @@ def test_audit_decorator_uses_kwargs_checksum_when_result_no_checksum():
         use_case=mock_use_case,
         audit_repo=mock_repo,
         action="test-action",
-        entity_type="Document"
+        entity_type="Document",
     )
 
     result = decorator.execute(checksum="kwarg-checksum")
@@ -86,7 +87,7 @@ def test_audit_decorator_empty_checksum_when_not_found():
         use_case=mock_use_case,
         audit_repo=mock_repo,
         action="test-action",
-        entity_type="Document"
+        entity_type="Document",
     )
 
     decorator.execute()
@@ -103,7 +104,7 @@ def test_audit_decorator_forwards_args_and_kwargs():
     mock_use_case = MockUseCase(
         return_value=stub_result,
         expected_args=expected_args,
-        expected_kwargs=expected_kwargs
+        expected_kwargs=expected_kwargs,
     )
     mock_repo = MockAuditRepository()
 
@@ -111,7 +112,7 @@ def test_audit_decorator_forwards_args_and_kwargs():
         use_case=mock_use_case,
         audit_repo=mock_repo,
         action="test",
-        entity_type="Document"
+        entity_type="Document",
     )
 
     decorator.execute("arg1", "arg2", key="value")

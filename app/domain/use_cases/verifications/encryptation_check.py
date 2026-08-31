@@ -5,6 +5,7 @@ from pypdf import PdfReader
 
 logger = logging.getLogger(__name__)
 
+
 def encryptation_check(document_content: bytes) -> bool:
     """
     Check if the PDF document is encrypted.

@@ -22,51 +22,79 @@ def document_repository() -> MongoRepository:
     collection = mongo_connection.get_db
     return MongoRepository(collection)
 
+
 def audit_repository() -> MongoAuditLogRepository:
     collection = mongo_connection.get_db
     return MongoAuditLogRepository(collection)
 
+
 def text_extractor() -> Converter:
     """Factory function to create an instance of Converter."""
     return ExtractText()
+
 
 def get_find_document_use_case() -> FindDocumentUseCase:
     """Factory function to create an instance of FindDocumentUseCase."""
 
     return FindDocumentUseCase(document_repository())
 
+
 def get_save_document_use_case() -> SaveDocumentUseCase:
     """Factory function to create an instance of SaveDocumentUseCase."""
     repo = document_repository()
     audit_repo = audit_repository()
     use_case = SaveDocumentUseCase(repo)
-    return AuditDecorator(use_case=use_case, audit_repo=audit_repo, action=settings.audit_save_action, entity_type=settings.audit_entity_type)
+    return AuditDecorator(
+        use_case=use_case,
+        audit_repo=audit_repo,
+        action=settings.audit_save_action,
+        entity_type=settings.audit_entity_type,
+    )
+
 
 def get_update_document_use_case() -> UpdateDocumentUseCase:
     """Factory function to create an instance of UpdateDocumentUseCase."""
     repo = document_repository()
     audit_repo = audit_repository()
     use_case = UpdateDocumentUseCase(repo)
-    return AuditDecorator(use_case=use_case, audit_repo=audit_repo, action=settings.audit_update_action, entity_type=settings.audit_entity_type)
+    return AuditDecorator(
+        use_case=use_case,
+        audit_repo=audit_repo,
+        action=settings.audit_update_action,
+        entity_type=settings.audit_entity_type,
+    )
+
 
 def get_delete_document_use_case() -> DeleteDocumentUseCase:
     """Factory function to create an instance of DeleteDocumentUseCase."""
     repo = document_repository()
     audit_repo = audit_repository()
     use_case = DeleteDocumentUseCase(repo)
-    return AuditDecorator(use_case=use_case, audit_repo=audit_repo, action=settings.audit_delete_action, entity_type=settings.audit_entity_type)
+    return AuditDecorator(
+        use_case=use_case,
+        audit_repo=audit_repo,
+        action=settings.audit_delete_action,
+        entity_type=settings.audit_entity_type,
+    )
 
-def get_process_document_use_case()-> ProcessDocumentUseCase:
+
+def get_process_document_use_case() -> ProcessDocumentUseCase:
     """Factory function to create an instance of ProcessDocumentUseCase."""
     audit_repo = audit_repository()
     use_case = ProcessDocumentUseCase(text_extractor())
-    return AuditDecorator(use_case=use_case, audit_repo=audit_repo, action=settings.audit_process_action, entity_type=settings.audit_entity_type)
+    return AuditDecorator(
+        use_case=use_case,
+        audit_repo=audit_repo,
+        action=settings.audit_process_action,
+        entity_type=settings.audit_entity_type,
+    )
+
 
 def get_find_audit_use_case() -> FindAuditLogsUseCase:
     """Factory function to create an instance of FindAuditLogsUseCase."""
     return FindAuditLogsUseCase(audit_repository())
 
+
 def get_find_audit_by_checksum() -> FindAuditLogsByChecksumUseCase:
     """Factory function to create an instance of FindAuditLogsByChecksumUseCase."""
     return FindAuditLogsByChecksumUseCase(audit_repository())
-

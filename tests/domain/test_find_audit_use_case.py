@@ -10,6 +10,7 @@ class MockAuditRepository:
      - captured_skip: Captures the 'skip' parameter passed to find_all for verification.
      - captured_limit: Captures the 'limit' parameter passed to find_all for verification.
     """
+
     def __init__(self, data_pool=None):
         self.data_pool = data_pool if data_pool is not None else []
         self.captured_skip = None
@@ -22,6 +23,7 @@ class MockAuditRepository:
         if len(self.data_pool) <= limit and skip == 0:
             return self.data_pool
         return self.data_pool[skip : skip + limit]
+
 
 def test_find_audit_logs_execute_returns_list():
     expected_logs = [
@@ -50,6 +52,7 @@ def test_find_audit_logs_with_pagination():
     assert len(result) == 5
     assert result[0].checksum == "checksum5"
     assert result[4].checksum == "checksum9"
+
 
 def test_find_audit_logs_empty_result():
     repo = MockAuditRepository(data_pool=[])

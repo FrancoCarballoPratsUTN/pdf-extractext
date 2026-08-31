@@ -6,6 +6,7 @@ from app.main import app
 
 client = TestClient(app)
 
+
 def test_find_document_success(mock_document_success):
     checksum = "UNIQUE-FILE-CODE"
     app.dependency_overrides[get_find_document_use_case] = lambda: mock_document_success
@@ -17,6 +18,7 @@ def test_find_document_success(mock_document_success):
     assert data["checksum"] == checksum
     assert "text" in data
     assert "file_name" in data
+
 
 def test_find_document_not_found(mock_document_error):
     checksum = "NO-EXIST-CODE"

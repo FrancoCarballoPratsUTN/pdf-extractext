@@ -5,10 +5,11 @@ from pypdf import PdfReader
 
 logger = logging.getLogger(__name__)
 
+
 def liveness_check(document_content: bytes) -> bool:
     """
     Check if the PDF document is a valid PDF and can be read.
-    
+
     Args:
         document_content (bytes): The content of the PDF document as bytes.
 

@@ -14,10 +14,8 @@ def test_invalid_pdf_conversion():
 
 def test_extract_text_conversion():
     """Test the conversion of a PDF to text using the ExtractText converter."""
-    pdf_content = create_mock_pdf(encrypted= False)
+    pdf_content = create_mock_pdf(encrypted=False)
     converter = ExtractText()
     text_result = converter.convert(pdf_content)
 
     assert text_result.strip() != "", "The converted text should not be empty."
-
-

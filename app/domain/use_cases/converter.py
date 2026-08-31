@@ -7,10 +7,11 @@ from app.domain.use_cases.flows.flow_validation import do_validation
 
 class ProcessDocumentUseCase:
     """Use case for processing a document using a specified converter."""
+
     def __init__(self, converter: Converter):
         self.converter = converter
 
-    def execute(self, file_content: bytes, filename: str)-> Document:
+    def execute(self, file_content: bytes, filename: str) -> Document:
         """
         Executes the document processing using the provided converter.
         Args:
@@ -23,6 +24,6 @@ class ProcessDocumentUseCase:
             raise DocumentValidationError("Invalid PDF or corrupted file.")
 
         text = self.converter.convert(file_content)
-        text_encode = text.encode('utf-8')
+        text_encode = text.encode("utf-8")
 
         return flow_building(text_encode, filename)

@@ -8,16 +8,26 @@ from app.presentation.schemas.exception_response import ProblemDetailsSchema
 
 router = APIRouter()
 
+
 @router.post(
-    '/save',
+    "/save",
     response_model=DocumentSchema,
     status_code=status.HTTP_201_CREATED,
     responses={
-        409: {"model": ProblemDetailsSchema, "description": "Document already exists (Conflict)"},
-        422: {"model": ProblemDetailsSchema, "description": "Validation error in business rules"}
-    }
+        409: {
+            "model": ProblemDetailsSchema,
+            "description": "Document already exists (Conflict)",
+        },
+        422: {
+            "model": ProblemDetailsSchema,
+            "description": "Validation error in business rules",
+        },
+    },
 )
-async def save_document(document: DocumentSchema, use_case: SaveDocumentUseCase = Depends(get_save_document_use_case)) -> DocumentSchema:
+async def save_document(
+    document: DocumentSchema,
+    use_case: SaveDocumentUseCase = Depends(get_save_document_use_case),
+) -> DocumentSchema:
     """
     Args:
         document (DocumentSchema): Data from the document to be saved, received in the request body. This schema validates the input structure.

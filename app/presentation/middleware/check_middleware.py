@@ -8,11 +8,12 @@ from app.domain.use_cases.verifications.type_check import type_check
 
 logger = logging.getLogger(__name__)
 
-def check_middleware(file: UploadFile =File(...))-> UploadFile:
+
+def check_middleware(file: UploadFile = File(...)) -> UploadFile:
     """
     Middleware to validate the uploaded file's type and size.
     Args:
-        file (UploadFile): The uploaded file to be validated.   
+        file (UploadFile): The uploaded file to be validated.
     Returns:
         UploadFile: The validated uploaded file."""
     file_type = file.content_type
@@ -26,6 +27,7 @@ def check_middleware(file: UploadFile =File(...))-> UploadFile:
         logger.warning(f"File size {file_size} bytes is not within the allowed limit.")
         raise InvalidDocumentDataError("the file size is not within the limite")
 
-    logger.info(f"File {file.filename} passed validation checks. Type: {file_type}, Size: {file_size} bytes.")
+    logger.info(
+        f"File {file.filename} passed validation checks. Type: {file_type}, Size: {file_size} bytes."
+    )
     return file
-

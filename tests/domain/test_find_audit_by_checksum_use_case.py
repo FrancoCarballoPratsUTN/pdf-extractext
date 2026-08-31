@@ -11,6 +11,7 @@ class MockAuditRepository:
         - return_value: A list of AuditLog objects to return when find_by_checksum is called.
         - captured_checksum: Captures the 'checksum' parameter passed to find_by_checksum for verification.
     """
+
     def __init__(self, return_value=None):
         self.return_value = return_value if return_value is not None else []
         self.captured_checksum = None
@@ -18,6 +19,7 @@ class MockAuditRepository:
     def find_by_checksum(self, checksum: str):
         self.captured_checksum = checksum
         return self.return_value
+
 
 def test_find_by_checksum_returns_matching_logs():
     expected = [

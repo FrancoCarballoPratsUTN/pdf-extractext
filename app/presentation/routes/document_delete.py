@@ -5,14 +5,24 @@ from app.infrastructure.dependencies.dependencies import get_delete_document_use
 from app.presentation.schemas.exception_response import ProblemDetailsSchema
 
 router = APIRouter()
-@router.delete('/delete/{checksum}',
+
+
+@router.delete(
+    "/delete/{checksum}",
     response_model=dict,
     status_code=200,
     responses={
         404: {"model": ProblemDetailsSchema, "description": "Document not found"},
-        500: {"model": ProblemDetailsSchema, "description": "Internal server error during deletion"}
-    })
-async def delete_document(checksum: str, use_case: DeleteDocumentUseCase = Depends(get_delete_document_use_case)) -> dict:
+        500: {
+            "model": ProblemDetailsSchema,
+            "description": "Internal server error during deletion",
+        },
+    },
+)
+async def delete_document(
+    checksum: str,
+    use_case: DeleteDocumentUseCase = Depends(get_delete_document_use_case),
+) -> dict:
     """
     Args:
         checksum (str): The unique SHA-256 identifier of the document to be deleted.

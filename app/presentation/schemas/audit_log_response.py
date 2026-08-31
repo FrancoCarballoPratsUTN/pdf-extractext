@@ -5,6 +5,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 class AuditLogSchema(BaseModel):
     """Response model for audit log entries."""
+
     action: str
     entity_type: str
     checksum: str

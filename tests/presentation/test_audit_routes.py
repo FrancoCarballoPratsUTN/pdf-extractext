@@ -16,16 +16,23 @@ client = TestClient(app)
 def test_get_audit_logs_success():
     class MockUseCase:
         """Mock use case to simulate the behavior of finding audit logs."""
+
         def execute(self, skip, limit):
             return [
                 AuditLog(
-                    action="save", entity_type="Document", checksum="abc",
-                    performed_at=datetime(2024, 1, 1, 12, 0, 0), _id="_id-1",
+                    action="save",
+                    entity_type="Document",
+                    checksum="abc",
+                    performed_at=datetime(2024, 1, 1, 12, 0, 0),
+                    _id="_id-1",
                 ),
                 AuditLog(
-                    action="delete", entity_type="Document", checksum="def",
+                    action="delete",
+                    entity_type="Document",
+                    checksum="def",
                     details={"reason": "test"},
-                    performed_at=datetime(2024, 6, 15, 10, 30, 0), _id="_id-2",
+                    performed_at=datetime(2024, 6, 15, 10, 30, 0),
+                    _id="_id-2",
                 ),
             ]
 
@@ -44,6 +51,7 @@ def test_get_audit_logs_success():
 def test_get_audit_logs_empty():
     class MockUseCase:
         """Mock use case to simulate the behavior of finding audit logs."""
+
         def execute(self, skip, limit):
             return []
 
@@ -59,8 +67,11 @@ def test_get_audit_logs_by_checksum_success():
         def execute(self, checksum):
             return [
                 AuditLog(
-                    action="save", entity_type="Document", checksum=checksum,
-                    performed_at=datetime(2024, 1, 1, 12, 0, 0), _id="_id-1",
+                    action="save",
+                    entity_type="Document",
+                    checksum=checksum,
+                    performed_at=datetime(2024, 1, 1, 12, 0, 0),
+                    _id="_id-1",
                 ),
             ]
 
@@ -76,7 +87,9 @@ def test_get_audit_logs_by_checksum_success():
 def test_get_audit_logs_by_checksum_not_found():
     class MockUseCase:
         def execute(self, checksum):
-            raise DocumentNotFoundError("No audit logs found with checksum: nonexistent")
+            raise DocumentNotFoundError(
+                "No audit logs found with checksum: nonexistent"
+            )
 
     app.dependency_overrides[get_find_audit_by_checksum] = lambda: MockUseCase()
     response = client.get("/audit/logs/checksum/nonexistent")
@@ -95,12 +108,18 @@ def test_get_audit_logs_by_checksum_multiple_results():
         def execute(self, checksum):
             return [
                 AuditLog(
-                    action="save", entity_type="Document", checksum=checksum,
-                    performed_at=datetime(2024, 1, 1, 12, 0, 0), _id="_id-1",
+                    action="save",
+                    entity_type="Document",
+                    checksum=checksum,
+                    performed_at=datetime(2024, 1, 1, 12, 0, 0),
+                    _id="_id-1",
                 ),
                 AuditLog(
-                    action="update", entity_type="Document", checksum=checksum,
-                    performed_at=datetime(2024, 1, 2, 12, 0, 0), _id="_id-2",
+                    action="update",
+                    entity_type="Document",
+                    checksum=checksum,
+                    performed_at=datetime(2024, 1, 2, 12, 0, 0),
+                    _id="_id-2",
                 ),
             ]
 

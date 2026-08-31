@@ -11,6 +11,7 @@ def test_create_document(mock_document):
     assert new_document is not None
     assert new_document.checksum == mock_document.checksum
 
+
 def test_create_duplicate_document(mock_document):
     """Test saving a document with a duplicate checksum."""
     mock_repo = get_mock_repository()

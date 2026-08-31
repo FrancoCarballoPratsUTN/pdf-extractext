@@ -6,15 +6,25 @@ from app.presentation.schemas.document import DocumentSchema
 from app.presentation.schemas.exception_response import ProblemDetailsSchema
 
 router = APIRouter()
+
+
 @router.get(
-    '/find/{checksum}',
+    "/find/{checksum}",
     response_model=DocumentSchema,
     responses={
-        404: {"model": ProblemDetailsSchema, "description": "Document not found by the provided checksum"},
-        500: {"model": ProblemDetailsSchema, "description": "Internal server error during document retrieval"}
-    }
+        404: {
+            "model": ProblemDetailsSchema,
+            "description": "Document not found by the provided checksum",
+        },
+        500: {
+            "model": ProblemDetailsSchema,
+            "description": "Internal server error during document retrieval",
+        },
+    },
 )
-async def find_document_by_checksum(checksum: str,use_case: FindDocumentUseCase = Depends(get_find_document_use_case)) -> DocumentSchema:
+async def find_document_by_checksum(
+    checksum: str, use_case: FindDocumentUseCase = Depends(get_find_document_use_case)
+) -> DocumentSchema:
     """
     Args:
         checksum (str): Unique identifier of the document to search for.

@@ -9,7 +9,9 @@ from app.domain.use_cases.verifications.liveness_check import liveness_check
 from app.domain.use_cases.verifications.trailer_check import trailer_check
 
 logger = logging.getLogger(__name__)
-def do_validation(document_content: bytes)-> bool:
+
+
+def do_validation(document_content: bytes) -> bool:
     """Executes the document processing pipeline, which includes various verification steps.
     Args:
         document_content (bytes): The content of the document to be processed.

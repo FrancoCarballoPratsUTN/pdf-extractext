@@ -13,6 +13,7 @@ def test_find_by_checksum(mock_document):
     assert found_document is not None
     assert found_document.checksum == mock_document.checksum
 
+
 def test_find_by_checksum_not_found():
     """Test finding a document by checksum that does not exist."""
     mock_repo = get_mock_repository()

@@ -1,8 +1,7 @@
-
 def trailer_check(document_content: bytes) -> bool:
     """
     Verifies that the PDF document has a valid trailer.
-    
+
     Args:
         document_content (bytes): The content of the PDF document as bytes.
 
@@ -10,4 +9,4 @@ def trailer_check(document_content: bytes) -> bool:
         bool: True if the trailer is valid, False otherwise.
 
     """
-    return  b'%%EOF' in document_content[-100:]
+    return b"%%EOF" in document_content[-100:]

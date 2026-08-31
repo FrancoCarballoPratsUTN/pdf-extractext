@@ -8,16 +8,26 @@ from app.presentation.schemas.exception_response import ProblemDetailsSchema
 
 router = APIRouter()
 
+
 @router.post(
-    '/upload',
+    "/upload",
     response_model=DocumentSchema,
     status_code=status.HTTP_201_CREATED,
     responses={
-        422: {"model": ProblemDetailsSchema, "description": "Document validation failed (corrupted or invalid structure)"},
-        500: {"model": ProblemDetailsSchema, "description": "Internal error during text extraction or file processing"}
-    }
+        422: {
+            "model": ProblemDetailsSchema,
+            "description": "Document validation failed (corrupted or invalid structure)",
+        },
+        500: {
+            "model": ProblemDetailsSchema,
+            "description": "Internal error during text extraction or file processing",
+        },
+    },
 )
-async def upload_file(file_validate: UploadFile = Depends(check_middleware), conversor: ProcessDocumentUseCase = Depends(get_process_document_use_case)) -> DocumentSchema:
+async def upload_file(
+    file_validate: UploadFile = Depends(check_middleware),
+    conversor: ProcessDocumentUseCase = Depends(get_process_document_use_case),
+) -> DocumentSchema:
     """
     Endpoint to upload and process a file.
     Args:

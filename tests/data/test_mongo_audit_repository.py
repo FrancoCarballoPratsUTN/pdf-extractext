@@ -15,7 +15,7 @@ def audit_repo():
     """
     Initializes a MongoAuditLogRepository with a mocked MongoDB collection for testing purposes.
     Returns:
-        MongoAuditLogRepository: An instance of the repository with a mocked collection.    
+        MongoAuditLogRepository: An instance of the repository with a mocked collection.
     """
     client = mongomock.MongoClient()
     db = client["test_db"]
@@ -23,7 +23,6 @@ def audit_repo():
     repo = MongoAuditLogRepository(db)
     repo._collection = collection
     return repo
-
 
 
 def test_save_audit_log(audit_repo):
@@ -75,7 +74,9 @@ def test_find_all_with_pagination(audit_repo):
 def test_find_by_checksum_returns_matching_logs(audit_repo):
     audit_repo.save(AuditLog(action="save", entity_type="Document", checksum="target"))
     audit_repo.save(AuditLog(action="delete", entity_type="Document", checksum="other"))
-    audit_repo.save(AuditLog(action="update", entity_type="Document", checksum="target"))
+    audit_repo.save(
+        AuditLog(action="update", entity_type="Document", checksum="target")
+    )
 
     result = audit_repo.find_by_checksum("target")
 

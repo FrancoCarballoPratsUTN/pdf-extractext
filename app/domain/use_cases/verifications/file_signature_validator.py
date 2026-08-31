@@ -1,7 +1,7 @@
 PDF_MAGIC_NUMBER = b"%PDF-"
 
-def validate_pdf_signature(file_content: bytes) -> bool:
 
+def validate_pdf_signature(file_content: bytes) -> bool:
     """Validates that the provided document has a valid PDF signature
 
     Args:

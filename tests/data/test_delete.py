@@ -12,9 +12,12 @@ def test_delete_document(mock_document):
     response = collection.delete(mock_document.checksum)
     assert response == {"message": "Document deleted successfully."}
 
+
 def test_delete_nonexistent_document():
     """Test deleting a non-existent document."""
     collection = get_mock_repository()
-    with pytest.raises(DocumentNotFoundError, match="Document with checksum nonexistent_checksum not found."):
+    with pytest.raises(
+        DocumentNotFoundError,
+        match="Document with checksum nonexistent_checksum not found.",
+    ):
         collection.delete("nonexistent_checksum")
-
