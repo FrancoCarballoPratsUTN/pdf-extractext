@@ -1,9 +1,7 @@
 import logging
-from io import BytesIO
-
-from pypdf import PdfReader
 
 from app.domain.contracts.document_converter import Converter
+from app.domain.use_cases.verifications.open_pdf import open_pdf
 
 logger = logging.getLogger(__name__)
 
@@ -16,9 +14,8 @@ class ExtractText(Converter):
         Returns:
             str: The extracted text from the PDF file."""
         try:
-            file_bytes = BytesIO(file_content)
-            reader = PdfReader(file_bytes)
-            text = "\n".join([pagina.extract_text() for pagina in reader.pages])
+            reader = open_pdf(file_content)
+            text = "\n".join([page.extract_text() for page in reader.pages])
 
             logger.info("Text extracted from PDF successfully.")
             return text

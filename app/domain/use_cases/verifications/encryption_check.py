@@ -1,12 +1,11 @@
-import io
 import logging
 
-from pypdf import PdfReader
+from app.domain.use_cases.verifications.open_pdf import open_pdf
 
 logger = logging.getLogger(__name__)
 
 
-def encryptation_check(document_content: bytes) -> bool:
+def encryption_check(document_content: bytes) -> bool:
     """
     Check if the PDF document is encrypted.
     Args:
@@ -15,7 +14,7 @@ def encryptation_check(document_content: bytes) -> bool:
         bool: True if the PDF is encrypted, False otherwise.
     """
     try:
-        reader = PdfReader(io.BytesIO(document_content))
+        reader = open_pdf(document_content)
         logger.info("PDF encryption check completed successfully.")
         return reader.is_encrypted
 
