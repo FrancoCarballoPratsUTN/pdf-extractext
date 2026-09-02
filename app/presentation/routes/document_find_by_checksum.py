@@ -28,11 +28,12 @@ async def find_document_by_checksum(
     """
     Args:
         checksum (str): Unique identifier of the document to search for.
-        use_case (FindDocumentUseCase): Use case responsible for searching and returning the document.
+        use_case (FindDocumentUseCase): Searches and returns the document.
 
     Returns:
         DocumentSchema: Found document that matches the provided checksum.
 
-    Raises: DocumentNotFoundError: If no document matches the provided checksum (Handled globally as 404).
+    Raises:
+        DocumentNotFoundError: If no document matches the checksum (404).
     """
     return use_case.execute(checksum)

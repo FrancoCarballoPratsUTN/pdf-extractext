@@ -30,15 +30,19 @@ async def save_document(
 ) -> DocumentSchema:
     """
     Args:
-        document (DocumentSchema): Data from the document to be saved, received in the request body. This schema validates the input structure.
-        use_case (SaveDocumentUseCase): Use case responsible for persisting the document in the system.
+        document (DocumentSchema): Data for the document to be saved, from the request
+            body. This schema validates the input structure.
+        use_case (SaveDocumentUseCase): Use case responsible for persisting the
+            document in the system.
 
     Returns:
         DocumentSchema: The saved document.
 
     Raises:
-        DocumentAlreadyExistsError: If a document with the same checksum is already registered (Handled as 409 Conflict).
-        DocumentValidationError: If the provided data fails business rule validation (Handled as 422 Unprocessable Entity).
+        DocumentAlreadyExistsError: If a document with the same checksum is already
+            registered (Handled as 409 Conflict).
+        DocumentValidationError: If the provided data fails business rule validation
+            (Handled as 422 Unprocessable Entity).
     """
     document_dataclass = Document(**document.model_dump())
     return use_case.execute(document_dataclass)

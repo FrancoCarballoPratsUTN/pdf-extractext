@@ -22,5 +22,5 @@ def test_trailer_check_valid(valid_pdf_document):
 
 
 def test_trailer_check_invalid(invalid_pdf_document):
-    """Test that the trailer_check function returns False for an invalid PDF document."""
+    """Asserts trailer_check returns False for an invalid PDF document."""
     assert not trailer_check(invalid_pdf_document)

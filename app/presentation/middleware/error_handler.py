@@ -9,8 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 async def problem_detail_handler(request: Request, exc: ProblemDetailError):
-    """
-    Handle ProblemDetailError exceptions and return a JSON response with problem details.
+    """Handle ProblemDetailError exceptions with a JSON problem-details response.
     Args:
         request (Request): The incoming HTTP request.
         exc (ProblemDetailError): The exception instance containing problem details.

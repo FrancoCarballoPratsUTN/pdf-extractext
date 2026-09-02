@@ -35,14 +35,14 @@ async def update_document(
     """
     Args:
         checksum (str): Unique identifier of the document to be updated.
-        new_data (UpdateDocumentSchema): Schema containing the new data to be updated in the document.
-        use_case (UpdateDocumentUseCase): Use case responsible for applying the document update in the system.
+        new_data (UpdateDocumentSchema): Schema with the new data for the document.
+        use_case (UpdateDocumentUseCase): Use case that applies the document update.
 
     Returns:
         DocumentSchema: Updated document after applying the changes.
 
     Raises:
-        DocumentNotFoundError: If the checksum does not match any record (Handled globally as 404).
-        DocumentValidationError: If the new_data violates domain constraints (Handled globally as 422).
+        DocumentNotFoundError: If the checksum does not match any record (404).
+        DocumentValidationError: If the new_data violates domain constraints (422).
     """
     return use_case.execute(checksum, new_data.model_dump(exclude_none=True))

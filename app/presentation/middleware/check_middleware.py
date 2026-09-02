@@ -12,6 +12,7 @@ logger = logging.getLogger(__name__)
 MIN_FILE_SIZE_BYTES = settings.min_bytes
 MAX_FILE_SIZE_BYTES = settings.max_bytes
 
+
 def check_middleware(file: UploadFile = File(...)) -> UploadFile:
     """
     Middleware to validate the uploaded file's type and size.
@@ -26,11 +27,14 @@ def check_middleware(file: UploadFile = File(...)) -> UploadFile:
         logger.warning(f"Invalid file type: {file_type}. Only PDF files are allowed.")
         raise InvalidDocumentDataError("Invalid file type. Only PDF files are allowed.")
 
-    if not validate_file_size(file_size=file_size, file_min=MIN_FILE_SIZE_BYTES, file_max=MAX_FILE_SIZE_BYTES):
+    if not validate_file_size(
+        file_size=file_size, file_min=MIN_FILE_SIZE_BYTES, file_max=MAX_FILE_SIZE_BYTES
+    ):
         logger.warning(f"File size {file_size} bytes is not within the allowed limit.")
         raise InvalidDocumentDataError("the file size is not within the limite")
 
     logger.info(
-        f"File {file.filename} passed validation checks. Type: {file_type}, Size: {file_size} bytes."
+        f"File {file.filename} passed validation checks. "
+        f"Type: {file_type}, Size: {file_size} bytes."
     )
     return file

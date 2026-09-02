@@ -14,7 +14,7 @@ class MongoDBConnection:
         self._db = None
 
     def connect(self):
-        """Connects to the MongoDB database using environment variables for configuration."""
+        """Connects to MongoDB using environment variables for configuration."""
         if self._client is None:
             try:
                 host = settings.host_db

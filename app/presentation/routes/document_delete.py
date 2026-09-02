@@ -26,7 +26,7 @@ async def delete_document(
     """
     Args:
         checksum (str): The unique SHA-256 identifier of the document to be deleted.
-        use_case (DeleteDocumentUseCase): Injected service that handles the deletion logic.
+        use_case (DeleteDocumentUseCase): Injected service that handles the deletion.
 
     Returns:
         dict: A confirmation message indicating the successful removal of the document.

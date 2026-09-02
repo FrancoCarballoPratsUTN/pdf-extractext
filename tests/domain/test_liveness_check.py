@@ -6,7 +6,7 @@ from tests.domain.mock_pdf import create_mock_pdf
 
 @pytest.fixture
 def invalid_liveness_data():
-    """Fixture that provides invalid liveness check data for testing, without Xref table."""
+    """Provides invalid liveness check data for testing, without Xref table."""
     return b"%PDF-1.4\n%...\n"
 
 

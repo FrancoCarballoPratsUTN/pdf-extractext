@@ -46,7 +46,7 @@ def mock_document_success(mock_document):
             self.date = original_dto.date
 
         def execute(self, checksum=None, data=None, **kwargs):
-            """Allows dynamic response based on input, useful for multiple test scenarios."""
+            """Allows dynamic response based on input, for multiple test scenarios."""
 
             current_checksum = checksum
             try:
