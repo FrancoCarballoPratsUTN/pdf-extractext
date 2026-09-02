@@ -13,7 +13,7 @@ from app.infrastructure.persistence.repositories.mongo_audit_repository import (
 @pytest.fixture
 def audit_repo():
     """
-    Initializes a MongoAuditLogRepository with a mocked MongoDB collection for testing purposes.
+    Initializes a MongoAuditLogRepository with a mocked MongoDB collection for testing.
     Returns:
         MongoAuditLogRepository: An instance of the repository with a mocked collection.
     """
@@ -30,7 +30,7 @@ def test_save_audit_log(audit_repo):
         action="save",
         entity_type="Document",
         checksum="abc123",
-        details={"file": "test.pdf"},
+        details="file saved: test.pdf",
         performed_at=datetime(2024, 1, 1, 12, 0, 0),
     )
 

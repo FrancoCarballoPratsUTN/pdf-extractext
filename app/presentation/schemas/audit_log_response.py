@@ -9,7 +9,7 @@ class AuditLogSchema(BaseModel):
     action: str
     entity_type: str
     checksum: str
-    details: dict | None = None
+    details: str | None = None
     performed_at: datetime
     id: str | None = Field(None, alias="_id", serialization_alias="_id")
     model_config = ConfigDict(from_attributes=True, populate_by_name=True)

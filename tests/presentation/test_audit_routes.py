@@ -30,7 +30,7 @@ def test_get_audit_logs_success():
                     action="delete",
                     entity_type="Document",
                     checksum="def",
-                    details={"reason": "test"},
+                    details="deleted reason: test",
                     performed_at=datetime(2024, 6, 15, 10, 30, 0),
                     _id="_id-2",
                 ),
