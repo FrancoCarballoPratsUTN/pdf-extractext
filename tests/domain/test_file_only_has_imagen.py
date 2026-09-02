@@ -9,7 +9,7 @@ def test_file_has_imagen_true():
     """
     image_pdf = create_mock_pdf(encrypted=False, is_image=True)
 
-    assert file_has_imagen(image_pdf) == True
+    assert file_has_imagen(image_pdf)
 
 
 def test_file_has_imagen_false():
@@ -19,4 +19,4 @@ def test_file_has_imagen_false():
     """
     text_pdf = create_mock_pdf(encrypted=False)
 
-    assert file_has_imagen(text_pdf) == False
+    assert not file_has_imagen(text_pdf)

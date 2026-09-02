@@ -6,10 +6,10 @@ from app.domain.use_cases.verifications.file_signature_validator import (
 def test_validate_pdf_signature_success():
     file_content = b"%PDF-1.4\n%\xe2\xe3"
 
-    assert validate_pdf_signature(file_content) == True
+    assert validate_pdf_signature(file_content)
 
 
 def test_validate_pdf_signature_fails():
     file_content = b"MZ\x90\x00\x03"
 
-    assert validate_pdf_signature(file_content) == False
+    assert not validate_pdf_signature(file_content)

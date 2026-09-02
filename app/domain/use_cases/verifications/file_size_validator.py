@@ -1,10 +1,5 @@
-from app.config.settings import settings
 
-MAX_FILE_SIZE_BYTES = settings.max_bytes
-MIN_FILE_SIZE_BYTES = settings.min_bytes
-
-
-def validate_file_size(file_size: float) -> bool:
+def validate_file_size(file_size: float, file_min: float, file_max: float) -> bool:
     """
     Checks if a file size is within the allowed limits.
 
@@ -14,4 +9,4 @@ def validate_file_size(file_size: float) -> bool:
     Returns:
         bool: True if the size is greater than 0 and less than 15MB, False otherwise.
     """
-    return MIN_FILE_SIZE_BYTES < file_size < MAX_FILE_SIZE_BYTES
+    return file_min < file_size < file_max

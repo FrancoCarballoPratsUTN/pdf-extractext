@@ -37,8 +37,9 @@ class MongoAuditLogRepository(Audit_LogRepository):
             list[AuditLog]: A list of audit logs.
         """
         cursor = self._collection.find().skip(skip).limit(limit)
-        result = [to_audit_log_dto({**doc, "_id": str(doc["_id"])}) for doc in cursor]
-        logger.info(f"Retrieved {len(list(cursor))} audit logs from the database.")
+        docs = list(cursor)
+        result = [to_audit_log_dto({**doc, "_id": str(doc["_id"])}) for doc in docs]
+        logger.info(f"Retrieved {len(docs)} audit logs from the database.")
 
         return result
 

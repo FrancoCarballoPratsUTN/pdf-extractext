@@ -18,9 +18,9 @@ def valid_liveness_data():
 
 def test_liveness_check_valid(valid_liveness_data):
     """Test that the liveness_check function returns True for valid PDF content."""
-    assert liveness_check(valid_liveness_data) == True
+    assert liveness_check(valid_liveness_data)
 
 
 def test_liveness_check_invalid(invalid_liveness_data):
     """Test that the liveness_check function returns False for invalid PDF content."""
-    assert liveness_check(invalid_liveness_data) == False
+    assert not liveness_check(invalid_liveness_data)
