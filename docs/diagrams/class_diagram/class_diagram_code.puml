@@ -41,7 +41,7 @@ package "app.domain" as DOMAIN {
     + delete(document_checksum)
   }
 
-  interface Audit_LogRepository {
+  interface AuditLogRepository {
     + save(audit_log: AuditLog): AuditLog
     + find_all(skip: int, limit: int): list[AuditLog]
     + find_by_checksum(checksum: str): list[AuditLog]
@@ -80,7 +80,7 @@ note right of DocumentRepository
 end note
 
 MongoRepository ..|> DocumentRepository : implements
-MongoAuditLogRepository ..|> Audit_LogRepository : implements
+MongoAuditLogRepository ..|> AuditLogRepository : implements
 ExtractText ..|> Converter : implements
 
 Document --> AuditLog : "1 → *\naudited by checksum"

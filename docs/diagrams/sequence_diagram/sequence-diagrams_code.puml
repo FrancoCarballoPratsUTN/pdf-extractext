@@ -66,10 +66,10 @@ note right: ¿Se puede abrir\ncon PdfReader?
 FV -> FV : trailer_check()
 note right: ¿Contiene %%EOF\nen últimos 100 bytes?
 
-FV -> FV : encryptation_check()
+FV -> FV : encryption_check()
 note right: ¿No está encriptado?
 
-FV -> FV : file_has_imagen()
+FV -> FV : file_has_only_images()
 note right: ¿Tiene texto\nextraíble?
 
 alt Alguna validación falla

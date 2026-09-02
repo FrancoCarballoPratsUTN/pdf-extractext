@@ -116,8 +116,8 @@ pdf-extractext/
 │   │       │   ├── flow_building.py
 │   │       │   └── flow_validation.py
 │   │       ├── verifications/
-│   │       │   ├── encryptation_check.py
-│   │       │   ├── file_only_has_imagen.py
+│   │       │   ├── encryption_check.py
+│   │       │   ├── file_only_has_images.py
 │   │       │   ├── file_signature_validator.py
 │   │       │   ├── file_size_validator.py
 │   │       │   ├── liveness_check.py
@@ -186,8 +186,8 @@ pdf-extractext/
 │   │   ├── test_audit_decorator.py
 │   │   ├── test_checksum.py
 │   │   ├── test_convert.py
-│   │   ├── test_encryptation_check.py
-│   │   ├── test_file_only_has_imagen.py
+│   │   ├── test_encryption_check.py
+│   │   ├── test_file_only_has_images.py
 │   │   ├── test_file_signature_validator.py
 │   │   ├── test_file_size_validator.py
 │   │   ├── test_find_audit_by_checksum_use_case.py
@@ -228,7 +228,7 @@ pdf-extractext/
   - **`entities/`**: Domain entities (`Document`, `AuditLog` dataclasses)
   - **`exceptions/`**: Custom errors following RFC 9457 (Problem Details)
   - **`contracts/`**: Contracts/ports for external dependencies (e.g., `Converter`)
-  - **`repositories/`**: Repository interfaces (`DocumentRepository`, `Audit_LogRepository`)
+  - **`repositories/`**: Repository interfaces (`DocumentRepository`, `AuditLogRepository`)
   - **`mappers/`**: DTO converters between dicts and domain entities
   - **`use_cases/`**: Application business rules
     - **`crud/`**: Basic database operations (save, find, update, delete)
@@ -272,7 +272,7 @@ pdf-extractext/
 | Pattern | Implementation |
 |---------|---------------|
 | **Decorator** | `AuditDecorator` transparently wraps use cases to add audit logging after each operation |
-| **Repository** | Abstract interfaces (`DocumentRepository`, `Audit_LogRepository`) with MongoDB implementations |
+| **Repository** | Abstract interfaces (`DocumentRepository`, `AuditLogRepository`) with MongoDB implementations |
 | **Pipeline / Chain of Responsibility** | `flow_validation.py` chains 5 sequential PDF verification checks |
 | **DTO / Mapper** | `to_dto.py` converts between raw dicts (from MongoDB) and domain entities |
 | **Dependency Injection** | FastAPI `Depends()` with factory functions in `dependencies.py` |
@@ -609,7 +609,7 @@ curl -X GET "http://localhost:8000/audit/logs/checksum/a1b2c3d4e5f6"
 The system performs the following validations on uploaded PDFs:
 
 1. **Encryption Check**: Detects encrypted PDFs (rejected)
-2. **File only has imagen**: The file only contains an image, no text
+2. **File only has images**: The file only contains an image, no text
 3. **Signature Validation**: Verifies the PDF file signature
 4. **File size validator**: Maximum and minimum file size
 5. **Liveness Check**: Ensures the PDF is not corrupted
