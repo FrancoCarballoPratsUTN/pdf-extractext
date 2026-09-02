@@ -4,11 +4,11 @@ from app.domain.use_cases.audit.find_audit_use_case import FindAuditLogsUseCase
 
 class MockAuditRepository:
     """
-    A mock implementation of the Audit_LogRepository for testing purposes.
-    It allows us to simulate the behavior of the repository without needing a real database.
+    A mock implementation of the AuditLogRepository for testing purposes.
+    It simulates the repository behavior without needing a real database.
      - data_pool: A list of AuditLog objects to return when find_all is called.
-     - captured_skip: Captures the 'skip' parameter passed to find_all for verification.
-     - captured_limit: Captures the 'limit' parameter passed to find_all for verification.
+     - captured_skip: Captures the 'skip' passed to find_all for verification.
+     - captured_limit: Captures the 'limit' parameter for verification.
     """
 
     def __init__(self, data_pool=None):

@@ -33,60 +33,55 @@ def text_extractor() -> Converter:
     return ExtractText()
 
 
+def _wrap_with_audit(use_case, action: str, checksum_extractor):
+    return AuditDecorator(
+        use_case=use_case,
+        audit_repo=audit_repository(),
+        action=action,
+        entity_type=settings.audit_entity_type,
+        checksum_extractor=checksum_extractor,
+    )
+
+
 def get_find_document_use_case() -> FindDocumentUseCase:
     """Factory function to create an instance of FindDocumentUseCase."""
 
     return FindDocumentUseCase(document_repository())
 
 
-def get_save_document_use_case() -> SaveDocumentUseCase:
+def get_save_document_use_case() -> AuditDecorator:
     """Factory function to create an instance of SaveDocumentUseCase."""
-    repo = document_repository()
-    audit_repo = audit_repository()
-    use_case = SaveDocumentUseCase(repo)
-    return AuditDecorator(
-        use_case=use_case,
-        audit_repo=audit_repo,
+    return _wrap_with_audit(
+        SaveDocumentUseCase(document_repository()),
         action=settings.audit_save_action,
-        entity_type=settings.audit_entity_type,
+        checksum_extractor=lambda result, *args, **kwargs: args[0].checksum,
     )
 
 
-def get_update_document_use_case() -> UpdateDocumentUseCase:
+def get_update_document_use_case() -> AuditDecorator:
     """Factory function to create an instance of UpdateDocumentUseCase."""
-    repo = document_repository()
-    audit_repo = audit_repository()
-    use_case = UpdateDocumentUseCase(repo)
-    return AuditDecorator(
-        use_case=use_case,
-        audit_repo=audit_repo,
+    return _wrap_with_audit(
+        UpdateDocumentUseCase(document_repository()),
         action=settings.audit_update_action,
-        entity_type=settings.audit_entity_type,
+        checksum_extractor=lambda result, *args, **kwargs: args[0],
     )
 
 
-def get_delete_document_use_case() -> DeleteDocumentUseCase:
+def get_delete_document_use_case() -> AuditDecorator:
     """Factory function to create an instance of DeleteDocumentUseCase."""
-    repo = document_repository()
-    audit_repo = audit_repository()
-    use_case = DeleteDocumentUseCase(repo)
-    return AuditDecorator(
-        use_case=use_case,
-        audit_repo=audit_repo,
+    return _wrap_with_audit(
+        DeleteDocumentUseCase(document_repository()),
         action=settings.audit_delete_action,
-        entity_type=settings.audit_entity_type,
+        checksum_extractor=lambda result, *args, **kwargs: args[0],
     )
 
 
-def get_process_document_use_case() -> ProcessDocumentUseCase:
+def get_process_document_use_case() -> AuditDecorator:
     """Factory function to create an instance of ProcessDocumentUseCase."""
-    audit_repo = audit_repository()
-    use_case = ProcessDocumentUseCase(text_extractor())
-    return AuditDecorator(
-        use_case=use_case,
-        audit_repo=audit_repo,
+    return _wrap_with_audit(
+        ProcessDocumentUseCase(text_extractor()),
         action=settings.audit_process_action,
-        entity_type=settings.audit_entity_type,
+        checksum_extractor=lambda result, *args, **kwargs: result.checksum,
     )
 
 

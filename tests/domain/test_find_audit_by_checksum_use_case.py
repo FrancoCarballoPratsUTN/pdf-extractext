@@ -6,10 +6,10 @@ from app.domain.use_cases.audit.find_audit_by_checksum_use_case import (
 
 class MockAuditRepository:
     """
-    A mock implementation of the Audit_LogRepository for testing purposes.
-    It allows us to simulate the behavior of the repository without needing a real database.
-        - return_value: A list of AuditLog objects to return when find_by_checksum is called.
-        - captured_checksum: Captures the 'checksum' parameter passed to find_by_checksum for verification.
+    A mock implementation of the AuditLogRepository for testing purposes.
+    It simulates the repository behavior without needing a real database.
+        - return_value: A list of AuditLog objects for find_by_checksum.
+        - captured_checksum: Captures the 'checksum' passed to find_by_checksum.
     """
 
     def __init__(self, return_value=None):

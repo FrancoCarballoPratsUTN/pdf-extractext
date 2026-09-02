@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from app.domain.entities.audit_log import AuditLog
 
 
-class Audit_LogRepository(ABC):
+class AuditLogRepository(ABC):
     @abstractmethod
     def save(self, audit_log: AuditLog) -> AuditLog:
         pass

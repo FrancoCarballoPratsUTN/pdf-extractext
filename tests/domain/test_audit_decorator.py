@@ -3,10 +3,13 @@ from app.domain.use_cases.audit.audit_decorator import AuditDecorator
 
 
 class MockUseCase:
-    """Mock use case to test the AuditDecorator. It can be configured to return a specific value and to assert that it was called with expected arguments.
+    """Mock use case to test the AuditDecorator. It can be configured to return a
+    specific value and to assert that it was called with expected arguments.
     - return_value: The value that the execute method will return when called.
-    - expected_args: A tuple of expected positional arguments that should be passed to the execute method. If provided, the mock will assert that the actual arguments match these.
-    - expected_kwargs: A dictionary of expected keyword arguments that should be passed to the execute method. If provided, the mock will assert that the actual keyword arguments match these.
+    - expected_args: A tuple of expected positional arguments that should be passed
+      to the execute method. If provided, the mock asserts the actual arguments match.
+    - expected_kwargs: A dictionary of expected keyword arguments that should be passed
+      to the execute method. If provided, the mock asserts the keyword arguments match.
     """
 
     def __init__(self, return_value=None, expected_args=None, expected_kwargs=None):
@@ -39,16 +42,23 @@ class MockAuditRepository:
         return audit_log
 
 
+def make_decorator(mock_use_case, mock_repo, extractor):
+    return AuditDecorator(
+        use_case=mock_use_case,
+        audit_repo=mock_repo,
+        action="test-action",
+        entity_type="Document",
+        checksum_extractor=extractor,
+    )
+
+
 def test_audit_decorator_executes_use_case_and_saves_log():
     stub_result = type("Result", (), {"checksum": "result-checksum"})()
     mock_use_case = MockUseCase(return_value=stub_result)
     mock_repo = MockAuditRepository()
 
-    decorator = AuditDecorator(
-        use_case=mock_use_case,
-        audit_repo=mock_repo,
-        action="test-action",
-        entity_type="Document",
+    decorator = make_decorator(
+        mock_use_case, mock_repo, lambda result, *args, **kwargs: result.checksum
     )
 
     result = decorator.execute()
@@ -65,11 +75,10 @@ def test_audit_decorator_uses_kwargs_checksum_when_result_no_checksum():
     mock_use_case = MockUseCase(return_value="plain-result")
     mock_repo = MockAuditRepository()
 
-    decorator = AuditDecorator(
-        use_case=mock_use_case,
-        audit_repo=mock_repo,
-        action="test-action",
-        entity_type="Document",
+    decorator = make_decorator(
+        mock_use_case,
+        mock_repo,
+        lambda result, *args, **kwargs: kwargs.get("checksum", ""),
     )
 
     result = decorator.execute(checksum="kwarg-checksum")
@@ -79,21 +88,20 @@ def test_audit_decorator_uses_kwargs_checksum_when_result_no_checksum():
     assert result == "plain-result"
 
 
-def test_audit_decorator_empty_checksum_when_not_found():
-    mock_use_case = MockUseCase(return_value="plain-result")
+def test_audit_decorator_extracts_checksum_from_positional_arg():
+    mock_use_case = MockUseCase(
+        return_value={"message": "Document deleted successfully."}
+    )
     mock_repo = MockAuditRepository()
 
-    decorator = AuditDecorator(
-        use_case=mock_use_case,
-        audit_repo=mock_repo,
-        action="test-action",
-        entity_type="Document",
+    decorator = make_decorator(
+        mock_use_case, mock_repo, lambda result, *args, **kwargs: args[0]
     )
 
-    decorator.execute()
+    decorator.execute("checksum-to-delete")
 
     assert len(mock_repo.saved_logs) == 1
-    assert mock_repo.saved_logs[0].checksum == ""
+    assert mock_repo.saved_logs[0].checksum == "checksum-to-delete"
 
 
 def test_audit_decorator_forwards_args_and_kwargs():
@@ -108,11 +116,8 @@ def test_audit_decorator_forwards_args_and_kwargs():
     )
     mock_repo = MockAuditRepository()
 
-    decorator = AuditDecorator(
-        use_case=mock_use_case,
-        audit_repo=mock_repo,
-        action="test",
-        entity_type="Document",
+    decorator = make_decorator(
+        mock_use_case, mock_repo, lambda result, *args, **kwargs: result.checksum
     )
 
     decorator.execute("arg1", "arg2", key="value")
