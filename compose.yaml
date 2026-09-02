@@ -1,6 +1,6 @@
 services:
   pdf-extractext:
-    image: pdf-extractext:v1.1.0
+    image: pdf-extractext:v1.2.0
     container_name: pdf-extractext
     ports:
       - 8000:8000
