@@ -60,8 +60,12 @@ def mock_document_success(mock_document):
             elif hasattr(checksum, "text"):
                 final_text = checksum.text
 
+            final_file_name = self.file_name
+            if data and isinstance(data, dict) and "file_name" in data:
+                final_file_name = data["file_name"]
+
             return {
-                "file_name": self.file_name,
+                "file_name": final_file_name,
                 "checksum": current_checksum or self.checksum,
                 "text": final_text,
                 "date": "2026-04-27T00:00:00",

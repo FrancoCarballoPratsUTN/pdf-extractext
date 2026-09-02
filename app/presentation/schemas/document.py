@@ -9,3 +9,6 @@ class DocumentSchema(BaseModel):
     text: str = Field(..., description="Extracted text")
     date: datetime = Field(...)
     model_config = ConfigDict(from_attributes=True)
+
+class UpdateDocumentSchema(BaseModel):
+    file_name: str | None = Field(None, description="File name")

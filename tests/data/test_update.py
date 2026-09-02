@@ -8,16 +8,16 @@ def test_update_document(mock_document):
     """Test the update functionality of the MongoRepository."""
     collection = get_mock_repository()
     collection.save(mock_document)
-    new_data = {"text": "Updated text content."}
+    new_data = {"file_name": "Updated name"}
     updated_document = collection.update(mock_document.checksum, new_data)
     assert updated_document is not None
-    assert updated_document.text == "Updated text content."
+    assert updated_document.file_name == "Updated name"
 
 
 def test_update_nonexistent_document(mock_document):
     """Test updating a non-existent document."""
     collection = get_mock_repository()
-    new_data = {"text": "Updated text content."}
+    new_data = {"file_name": "Updated name"}
 
     with pytest.raises(DocumentNotFoundError):
         collection.update("nonexistent_checksum", new_data)

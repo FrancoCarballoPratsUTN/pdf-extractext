@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, status
 
 from app.domain.use_cases.crud.update_use_case import UpdateDocumentUseCase
 from app.infrastructure.dependencies.dependencies import get_update_document_use_case
-from app.presentation.schemas.document import DocumentSchema
+from app.presentation.schemas.document import DocumentSchema, UpdateDocumentSchema
 from app.presentation.schemas.exception_response import ProblemDetailsSchema
 
 router = APIRouter()
@@ -29,13 +29,13 @@ router = APIRouter()
 )
 async def update_document(
     checksum: str,
-    new_data: dict,
+    new_data: UpdateDocumentSchema,
     use_case: UpdateDocumentUseCase = Depends(get_update_document_use_case),
 ) -> DocumentSchema:
     """
     Args:
         checksum (str): Unique identifier of the document to be updated.
-        new_data (dict): Dictionary containing the new data to be updated in the document.
+        new_data (UpdateDocumentSchema): Schema containing the new data to be updated in the document.
         use_case (UpdateDocumentUseCase): Use case responsible for applying the document update in the system.
 
     Returns:
@@ -45,4 +45,4 @@ async def update_document(
         DocumentNotFoundError: If the checksum does not match any record (Handled globally as 404).
         DocumentValidationError: If the new_data violates domain constraints (Handled globally as 422).
     """
-    return use_case.execute(checksum, new_data)
+    return use_case.execute(checksum, new_data.model_dump(exclude_none=True))

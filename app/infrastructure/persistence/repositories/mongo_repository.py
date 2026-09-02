@@ -61,9 +61,10 @@ class MongoRepository(DocumentRepository):
         Returns:
             Document or None: The updated document or None if not found.
         """
+        allowed_fields = {k: v for k, v in new_data.items() if k == "file_name"}
         updated_data = self.collection.find_one_and_update(
             {"checksum": document_checksum},
-            {"$set": new_data},
+            {"$set": allowed_fields},
             return_document=ReturnDocument.AFTER,
         )
         if not updated_data:
