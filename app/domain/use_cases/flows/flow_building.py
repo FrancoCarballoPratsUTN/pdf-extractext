@@ -4,19 +4,19 @@ from app.domain.entities.document import Document
 from app.domain.use_cases.checksum import generate_checksum
 
 
-def flow_building(text: bytes, filename: str) -> Document:
-    """Builds a document flow by creating a Document entity with the provided text and filename.
+def flow_building(text: str, filename: str) -> Document:
+    """Builds a document flow creating a Document with the text and filename.
     Args:
-        text (bytes): The content of the document in bytes.
+        text (str): The content of the document.
         filename (str): The name of the file.
     Returns:
-        Document: A Document entity containing the checksum, filename, and creation date.
+        Document: Document entity with checksum, filename, and creation date.
     """
-    checksum = generate_checksum(text)
+    checksum = generate_checksum(text.encode("utf-8"))
     date_now = datetime.now(UTC)
 
     document = Document(
-        checksum=checksum, file_name=filename, text=text.decode("utf-8"), date=date_now
+        checksum=checksum, file_name=filename, text=text, date=date_now
     )
 
     return document

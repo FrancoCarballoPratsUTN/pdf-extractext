@@ -24,6 +24,5 @@ class ProcessDocumentUseCase:
             raise DocumentValidationError("Invalid PDF or corrupted file.")
 
         text = self.converter.convert(file_content)
-        text_encode = text.encode("utf-8")
 
-        return flow_building(text_encode, filename)
+        return flow_building(text, filename)
