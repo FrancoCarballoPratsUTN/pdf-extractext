@@ -1,22 +1,20 @@
 from datetime import datetime
+from unittest.mock import MagicMock
 
 import pytest
 
 from app.domain.entities.document import Document
-from app.infrastructure.dependencies.dependencies import get_process_document_use_case
 from app.main import app
 
 
 @pytest.fixture
 def mock_document():
-    """Fixture that provides a mock Document instance for testing."""
-    document = Document(
+    return Document(
         checksum="a6a6a6f6a6cv34",
         file_name="Test Document",
         text="This is a test document.",
-        date=datetime.now(),
+        date=datetime(2026, 4, 27, 0, 0, 0),
     )
-    return document
 
 
 @pytest.fixture(autouse=True)
@@ -26,73 +24,49 @@ def clean_dependencies():
 
 
 @pytest.fixture
-def override(monkeypatch, mock_document):
-    class MockUseCase:
-        def execute(self, file_name, text):
-            return mock_document["result"]
-
-    app.dependency_overrides[get_process_document_use_case] = lambda: MockUseCase()
-    yield
-    app.dependency_overrides.clear()
-
-
-@pytest.fixture
 def mock_document_success(mock_document):
-    class UniversalMock:
-        def __init__(self, original_dto):
-            self.file_name = original_dto.file_name
-            self.text = original_dto.text
-            self.checksum = original_dto.checksum
-            self.date = original_dto.date
+    mock = MagicMock()
 
-        def execute(self, checksum=None, data=None, **kwargs):
-            """Allows dynamic response based on input, for multiple test scenarios."""
+    def _execute(checksum=None, data=None, **kwargs):
+        chk = (
+            checksum.checksum
+            if hasattr(checksum, "checksum")
+            else (checksum or mock_document.checksum)
+        )
+        file_name = (
+            data.get("file_name") if isinstance(data, dict) else None
+        ) or mock_document.file_name
+        text = (
+            data.get("text") if isinstance(data, dict) else None
+        ) or mock_document.text
 
-            current_checksum = checksum
-            try:
-                current_checksum = checksum.checksum
-            except AttributeError:
-                current_checksum = checksum
+        return {
+            "file_name": file_name,
+            "checksum": chk,
+            "text": text,
+            "date": "2026-04-27T00:00:00",
+        }
 
-            final_text = self.text
-            if data and isinstance(data, dict) and "text" in data:
-                final_text = data["text"]
-            elif hasattr(checksum, "text"):
-                final_text = checksum.text
-
-            final_file_name = self.file_name
-            if data and isinstance(data, dict) and "file_name" in data:
-                final_file_name = data["file_name"]
-
-            return {
-                "file_name": final_file_name,
-                "checksum": current_checksum or self.checksum,
-                "text": final_text,
-                "date": "2026-04-27T00:00:00",
-            }
-
-    return UniversalMock(mock_document)
+    mock.execute.side_effect = _execute
+    return mock
 
 
 @pytest.fixture
 def mock_document_error():
-    def _generate_error(exception_to_raise):
-        class ErrorMock:
-            def execute(self, *args, **kwargs):
-                raise exception_to_raise
+    def _generate(exception_to_raise):
+        mock = MagicMock()
+        mock.execute.side_effect = exception_to_raise
+        return mock
 
-        return ErrorMock()
-
-    return _generate_error
+    return _generate
 
 
 @pytest.fixture
 def file_upload(mock_document):
-    file_upload = {
+    return {
         "file": (
             mock_document.file_name,
             mock_document.text.encode("utf-8"),
             "application/pdf",
         )
     }
-    return file_upload
